@@ -35,14 +35,14 @@ export const HeroCanvas: React.FC = () => {
     if (!ctx) return;
 
     let animationFrameId: number;
-    let dpr = window.devicePixelRatio || 1;
+    let dpr = Math.min(window.devicePixelRatio || 1, 2); // Cap at 2 for performance
     let width = window.innerWidth;
     let height = window.innerHeight;
 
     const updateCanvasSize = () => {
       width = window.innerWidth;
       height = window.innerHeight;
-      dpr = window.devicePixelRatio || 1;
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
       canvas.width = width * dpr;
       canvas.height = height * dpr;
       ctx.scale(dpr, dpr);
@@ -50,19 +50,22 @@ export const HeroCanvas: React.FC = () => {
 
     updateCanvasSize();
 
-    // Mouse state
+    // Mouse state & optimized interaction radius
+    const radius = 220;
+    const radiusSq = radius * radius; // Fast distance-squared comparison
+    const maxDisplacement = 22;
+
     const mouse = {
       x: -1000,
       y: -1000,
       targetX: -1000,
       targetY: -1000,
-      radius: 220, // Strictly localized interaction radius (px)
-      maxDisplacement: 22, // Subtle, elegant max shift (px)
       isHovered: false
     };
 
-    // 1. Generate Starfield with REDUCED, SUBTLE SIZES
-    const starCount = Math.min(Math.floor((width * height) / 5000), 320);
+    // Device-adaptive star density: ~100 stars on mobile, ~260 on desktop
+    const isMobile = width < 768;
+    const starCount = isMobile ? 110 : Math.min(Math.floor((width * height) / 5500), 280);
     const stars: Star[] = [];
 
     const starColors = [
@@ -75,18 +78,15 @@ export const HeroCanvas: React.FC = () => {
 
     for (let i = 0; i < starCount; i++) {
       const roll = Math.random();
-      // Smaller, delicate star sizing
-      let size = 0.5 + Math.random() * 0.6; // Majority are 0.5px - 1.1px
+      let size = 0.5 + Math.random() * 0.6;
       let baseAlpha = 0.35 + Math.random() * 0.45;
       let hasGlint = false;
 
       if (roll > 0.88) {
-        // Foreground accent stars (still subtle, max 1.6px)
         size = 1.3 + Math.random() * 0.4;
         baseAlpha = 0.75 + Math.random() * 0.25;
         hasGlint = Math.random() > 0.45;
       } else if (roll > 0.60) {
-        // Midground stars
         size = 0.9 + Math.random() * 0.4;
         baseAlpha = 0.5 + Math.random() * 0.35;
       }
@@ -109,7 +109,7 @@ export const HeroCanvas: React.FC = () => {
       });
     }
 
-    // 2. Shooting star generator
+    // Shooting star state
     let shootingStar: ShootingStar = {
       x: 0,
       y: 0,
@@ -135,7 +135,7 @@ export const HeroCanvas: React.FC = () => {
     let shootingStarTimer = 0;
     let nextShootingStarInterval = 400 + Math.random() * 300;
 
-    // 3. Event Listeners
+    // Event Listeners with passive performance
     const handleResize = () => {
       updateCanvasSize();
     };
@@ -165,7 +165,7 @@ export const HeroCanvas: React.FC = () => {
     window.addEventListener('touchmove', handleTouchMove, { passive: true });
     document.addEventListener('mouseleave', handleMouseLeave);
 
-    // 4. Render Loop
+    // Optimized 60fps Render Loop
     const render = () => {
       // Smooth mouse tracking
       mouse.x += (mouse.targetX - mouse.x) * 0.08;
@@ -173,35 +173,30 @@ export const HeroCanvas: React.FC = () => {
 
       ctx.clearRect(0, 0, width, height);
 
-      // Render stars with STRICTLY LOCALIZED cursor displacement
+      // Render stars with Fast Distance-Squared Physics
       for (let i = 0; i < stars.length; i++) {
         const star = stars[i];
 
-        // Calculate distance from cursor to this star's base position
         const dx = mouse.x - star.baseX;
         const dy = mouse.y - star.baseY;
-        const dist = Math.sqrt(dx * dx + dy * dy);
+        const distSq = dx * dx + dy * dy;
 
         let targetOffsetX = 0;
         let targetOffsetY = 0;
         let proxBoost = 0;
 
-        // STRICT LOCALIZATION: Only stars within mouse.radius react
-        // Stars on the other side of the screen have dist > radius, so targetOffset is strictly 0
-        if (mouse.isHovered && dist < mouse.radius && dist > 0.1) {
-          // Smooth quadratic falloff: closest stars move most, edge of radius moves 0
-          const normalized = (mouse.radius - dist) / mouse.radius;
-          const falloff = normalized * normalized; // Smooth ease-in-out curve
+        // Instant distance-squared check avoids costly Math.sqrt
+        if (mouse.isHovered && distSq < radiusSq && distSq > 0.01) {
+          const dist = Math.sqrt(distSq);
+          const normalized = (radius - dist) / radius;
+          const falloff = normalized * normalized;
 
-          // Gentle pull/shift in the direction of the cursor
-          targetOffsetX = (dx / dist) * mouse.maxDisplacement * falloff;
-          targetOffsetY = (dy / dist) * mouse.maxDisplacement * falloff;
-
-          // Subtle local brightness boost for nearby stars
+          targetOffsetX = (dx / dist) * maxDisplacement * falloff;
+          targetOffsetY = (dy / dist) * maxDisplacement * falloff;
           proxBoost = falloff * 0.35;
         }
 
-        // Smooth spring physics for local displacement & return to resting position
+        // Smooth spring physics
         star.offsetX += (targetOffsetX - star.offsetX) * 0.08;
         star.offsetY += (targetOffsetY - star.offsetY) * 0.08;
 
@@ -210,7 +205,7 @@ export const HeroCanvas: React.FC = () => {
 
         // Twinkle calculation
         star.twinklePhase += star.twinkleSpeed;
-        const twinkle = (Math.sin(star.twinklePhase) + 1) / 2;
+        const twinkle = (Math.sin(star.twinklePhase) + 1) * 0.5;
         const currentAlpha = Math.min(1, Math.max(0.15, star.baseAlpha * (0.65 + twinkle * 0.35) + proxBoost));
 
         // Draw Star Core
@@ -227,7 +222,7 @@ export const HeroCanvas: React.FC = () => {
 
         ctx.fill();
 
-        // Draw 4-point Diamond Glint on Bright Accent Stars
+        // Diamond Glint on Bright Accent Stars
         if (star.hasGlint && currentAlpha > 0.6) {
           const glintLength = star.size * 2.8 * (0.8 + twinkle * 0.2);
           const glintAlpha = currentAlpha * 0.6;
@@ -245,7 +240,7 @@ export const HeroCanvas: React.FC = () => {
         }
       }
 
-      // 5. Handle Rare Shooting Star
+      // Shooting Star
       shootingStarTimer++;
       if (shootingStarTimer > nextShootingStarInterval && !shootingStar.active) {
         spawnShootingStar();
@@ -304,16 +299,13 @@ export const HeroCanvas: React.FC = () => {
 
   return (
     <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
-      {/* Subtle 5% Soft Depth Blur Filter Layer */}
-      <div className="absolute inset-0 backdrop-blur-[1.5px] pointer-events-none -z-10" />
-
-      {/* Background ambient glowing gradient meshes */}
+      {/* Background ambient lighting layers */}
       <div className="absolute -top-40 left-1/2 -translate-x-1/2 w-[80vw] h-[60vh] rounded-full bg-zinc-800/15 blur-[140px] pointer-events-none animate-pulse-subtle" />
       <div className="absolute top-1/2 -right-20 w-[45vw] h-[45vh] rounded-full bg-zinc-900/25 blur-[130px] pointer-events-none" />
       <div className="absolute -bottom-20 -left-20 w-[50vw] h-[50vh] rounded-full bg-zinc-900/20 blur-[120px] pointer-events-none" />
 
-      {/* 60fps Localized Starry Canvas */}
-      <canvas ref={canvasRef} className="absolute inset-0 block w-full h-full" />
+      {/* 60fps Optimized Starry Canvas */}
+      <canvas ref={canvasRef} className="absolute inset-0 block w-full h-full will-change-transform" />
     </div>
   );
 };

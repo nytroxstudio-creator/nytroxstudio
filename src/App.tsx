@@ -4,6 +4,7 @@ import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
 import { About } from './components/About';
 import { Portfolio } from './components/Portfolio';
+import { Blog } from './components/Blog';
 import { LightboxModal } from './components/LightboxModal';
 import { Reviews } from './components/Reviews';
 import { ContactModal } from './components/ContactModal';
@@ -18,10 +19,10 @@ export const App: React.FC = () => {
       {/* 60fps Starry Parallax Canvas */}
       <HeroCanvas />
 
-      {/* Floating Glass Navigation Header */}
+      {/* Floating iOS 26 Glass Navigation Header */}
       <Navbar onOpenContact={() => setContactModalOpen(true)} />
 
-      {/* Main Content Sections with Semi-transparent Backdrops */}
+      {/* Main Content Sections */}
       <main className="relative z-10">
         <Hero
           onOpenContact={() => setContactModalOpen(true)}
@@ -32,6 +33,7 @@ export const App: React.FC = () => {
           onSelectProject={(id) => setSelectedProjectId(id)}
           onOpenContact={() => setContactModalOpen(true)}
         />
+        <Blog onOpenContact={() => setContactModalOpen(true)} />
         <Reviews />
       </main>
 
