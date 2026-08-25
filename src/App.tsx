@@ -4,7 +4,6 @@ import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
 import { About } from './components/About';
 import { Portfolio } from './components/Portfolio';
-import { Blog } from './components/Blog';
 import { LightboxModal } from './components/LightboxModal';
 import { Reviews } from './components/Reviews';
 import { ContactModal } from './components/ContactModal';
@@ -33,7 +32,6 @@ export const App: React.FC = () => {
           onSelectProject={(id) => setSelectedProjectId(id)}
           onOpenContact={() => setContactModalOpen(true)}
         />
-        <Blog onOpenContact={() => setContactModalOpen(true)} />
         <Reviews />
       </main>
 

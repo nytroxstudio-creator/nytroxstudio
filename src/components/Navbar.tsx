@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Menu, X, ArrowUpRight, Sparkles } from 'lucide-react';
 import { NytroxLogo } from './NytroxLogo';
 
@@ -11,7 +11,6 @@ const NAV_LINKS = [
   { label: 'About', id: 'about' },
   { label: 'Capabilities', id: 'capabilities' },
   { label: 'Portfolio', id: 'portfolio' },
-  { label: 'Blog', id: 'blog' },
   { label: 'Reviews', id: 'reviews' },
 ];
 
@@ -21,6 +20,16 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenContact }) => {
   const [activeSection, setActiveSection] = useState('home');
   const [hoveredId, setHoveredId] = useState<string | null>(null);
 
+  // Sliding indicator positioning
+  const navContainerRef = useRef<HTMLDivElement | null>(null);
+  const navButtonRefs = useRef<{ [key: string]: HTMLButtonElement | null }>({});
+  const [indicatorStyle, setIndicatorStyle] = useState<{ left: number; width: number; opacity: number }>({
+    left: 0,
+    width: 0,
+    opacity: 0,
+  });
+
+  // Track active section on scroll
   useEffect(() => {
     let ticking = false;
     const handleScroll = () => {
@@ -28,7 +37,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenContact }) => {
         window.requestAnimationFrame(() => {
           setIsScrolled(window.scrollY > 20);
 
-          const sections = ['home', 'about', 'capabilities', 'portfolio', 'blog', 'reviews'];
+          const sections = ['home', 'about', 'capabilities', 'portfolio', 'reviews'];
           for (const sectionId of sections) {
             const el = document.getElementById(sectionId);
             if (el) {
@@ -48,6 +57,24 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenContact }) => {
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  // Update sliding glass pill position smoothly
+  useEffect(() => {
+    const targetId = hoveredId || activeSection;
+    const targetEl = navButtonRefs.current[targetId];
+    const containerEl = navContainerRef.current;
+
+    if (targetEl && containerEl) {
+      const containerRect = containerEl.getBoundingClientRect();
+      const targetRect = targetEl.getBoundingClientRect();
+
+      setIndicatorStyle({
+        left: targetRect.left - containerRect.left,
+        width: targetRect.width,
+        opacity: 1,
+      });
+    }
+  }, [hoveredId, activeSection]);
 
   const scrollToSection = (id: string) => {
     setMobileMenuOpen(false);
@@ -69,7 +96,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenContact }) => {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
         
-        {/* Brand Logo with Smooth Scale */}
+        {/* Brand Logo */}
         <button
           onClick={() => scrollToSection('home')}
           className="group flex items-center text-left focus:outline-none transition-transform duration-300 hover:scale-105"
@@ -78,41 +105,44 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenContact }) => {
           <NytroxLogo size="nav" className="text-white" />
         </button>
 
-        {/* --- iOS 26 Glass-Style Interactive Navigation Bar --- */}
-        <nav className="hidden md:flex items-center gap-1 p-1.5 rounded-full bg-surface-100/50 border border-white/[0.12] backdrop-blur-2xl shadow-[inset_0_1px_1px_rgba(255,255,255,0.25),0_8px_24px_rgba(0,0,0,0.4)]">
+        {/* --- iOS 26 Liquid Sliding Glass Navigation Bar --- */}
+        <nav
+          ref={navContainerRef}
+          onMouseLeave={() => setHoveredId(null)}
+          className="relative hidden md:flex items-center gap-1 p-1.5 rounded-full bg-surface-100/50 border border-white/[0.12] backdrop-blur-2xl shadow-[inset_0_1px_1px_rgba(255,255,255,0.25),0_8px_24px_rgba(0,0,0,0.4)]"
+        >
+          {/* Smooth Sliding Glass Pill Indicator */}
+          <div
+            className="absolute top-1.5 bottom-1.5 rounded-full bg-white/[0.14] border border-white/[0.24] backdrop-blur-2xl shadow-[inset_0_1px_1px_rgba(255,255,255,0.45),0_4px_16px_rgba(0,0,0,0.3)] pointer-events-none transition-all duration-300 ease-[cubic-bezier(0.25,1,0.5,1)]"
+            style={{
+              transform: `translateX(${indicatorStyle.left}px)`,
+              width: `${indicatorStyle.width}px`,
+              opacity: indicatorStyle.opacity,
+            }}
+          />
+
           {NAV_LINKS.map((link) => {
             const isActive = activeSection === link.id;
-            const isHovered = hoveredId === link.id;
 
             return (
               <button
                 key={link.id}
+                ref={(el) => { navButtonRefs.current[link.id] = el; }}
                 onClick={() => scrollToSection(link.id)}
                 onMouseEnter={() => setHoveredId(link.id)}
-                onMouseLeave={() => setHoveredId(null)}
-                className={`relative px-4 py-1.5 text-xs font-semibold tracking-wider uppercase rounded-full transition-all duration-300 ease-out select-none ${
+                className={`relative z-10 px-4 py-1.5 text-xs font-semibold tracking-wider uppercase rounded-full transition-colors duration-200 select-none ${
                   isActive
                     ? 'text-white'
                     : 'text-zinc-400 hover:text-white'
                 }`}
               >
-                {/* Interactive Per-Item iOS 26 Glass Spotlight Pill */}
-                {(isActive || isHovered) && (
-                  <span
-                    className={`absolute inset-0 rounded-full transition-all duration-300 pointer-events-none -z-10 ${
-                      isHovered
-                        ? 'bg-white/[0.14] border border-white/[0.28] shadow-[inset_0_1px_1px_rgba(255,255,255,0.45),0_4px_12px_rgba(0,0,0,0.3)] backdrop-blur-xl scale-100'
-                        : 'bg-white/[0.10] border border-white/[0.16] shadow-sm'
-                    }`}
-                  />
-                )}
-                <span className="relative z-10">{link.label}</span>
+                {link.label}
               </button>
             );
           })}
         </nav>
 
-        {/* CTA Action Button with Liquid Glass Border */}
+        {/* CTA Action Button */}
         <div className="hidden md:flex items-center gap-3">
           <button
             onClick={onOpenContact}
