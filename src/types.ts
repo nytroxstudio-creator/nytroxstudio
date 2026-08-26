@@ -1,10 +1,10 @@
 export type PortfolioCategory =
   | 'VTuber & Live2D'
-  | 'Stream Emotes'
+  | 'Emotes'
   | 'Posters & Art'
   | '3D Logos & Marks'
   | 'Mascots & Avatars'
-  | 'YouTube Packaging'
+  | 'YouTube Thumbnails'
   | 'Social Banners';
 
 export interface PortfolioItem {
@@ -18,6 +18,7 @@ export interface PortfolioItem {
   alt: string;
   deliverables: string[];
   tag: string;
+  featured?: boolean;
 }
 
 export interface ServiceItem {

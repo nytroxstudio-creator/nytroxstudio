@@ -26,19 +26,20 @@ export const STUDIO_STATS = STUDIO_INFO.stats;
 
 export const PORTFOLIO_DATA: PortfolioItem[] = [
   // ==========================================
-  // 1. VTUBER & LIVE2D MODELS (Previews & Full Characters)
+  // 1. VTUBER & LIVE2D (Strictly Models & Previews)
   // ==========================================
   {
     id: 'vtuber-gothic-demon-video',
     category: 'VTuber & Live2D',
     title: 'Gothic Demon VTuber Model',
-    description: 'Full-body Live2D character model preview featuring fluid head physics, multi-layered eye blinking, dynamic breathing, and hair physics.',
+    description: 'Full-body Live2D character model preview featuring fluid head physics, multi-layered eye blinking, dynamic breathing, and physics pendulums.',
     image: '/portfolio-assets/IMG_7456.JPG',
     videoSrc: '/portfolio-assets/quality_restoration_20260826055256784.mp4',
     mediaType: 'video',
     alt: 'Gothic Demon VTuber Live2D Rigging Motion Preview',
     deliverables: ['Live2D Model Rig', 'VTubeStudio Setup', 'Physics Calibration', 'Full Motion Preview'],
-    tag: 'Live2D Preview'
+    tag: 'Live2D Preview',
+    featured: true
   },
   {
     id: 'vtuber-cyber-ronin-video',
@@ -55,7 +56,7 @@ export const PORTFOLIO_DATA: PortfolioItem[] = [
   {
     id: 'vtuber-ronin',
     category: 'VTuber & Live2D',
-    title: 'Ronin VTuber Model Concept',
+    title: 'Ronin VTuber Character Concept',
     description: 'Custom male VTuber model with a moody monochrome & dark wardrobe, katana details, and fluid layer cutouts.',
     image: 'https://cdn.enter.pro/resources/uid_100168087/ecb6b7d7-10e6-4e.jpg',
     alt: 'Male anime VTuber character design in ronin outfit',
@@ -74,21 +75,22 @@ export const PORTFOLIO_DATA: PortfolioItem[] = [
   },
 
   // ==========================================
-  // 2. STREAM EMOTES & BADGES
+  // 2. EMOTES (Dedicated Emotes & Stream Badges)
   // ==========================================
   {
-    id: 'vtuber-makima-emotes',
-    category: 'Stream Emotes',
+    id: 'emote-makima',
+    category: 'Emotes',
     title: 'Makima 8-Piece Anime Emote Pack',
     description: 'Custom high-detail anime expression and stream emote pack featuring wave, angry, crying, sleeping, and glowing blushing states.',
     image: '/portfolio-assets/IMG_7456.JPG',
     alt: 'Makima Anime 8-Piece Stream Emote Pack',
     deliverables: ['8 Custom Emotes', 'Twitch / Discord Sizes', 'Badge PNGs (28px to 512px)'],
-    tag: 'Emote Suite'
+    tag: 'Emote Suite',
+    featured: true
   },
   {
-    id: 'vtuber-raven-chibi',
-    category: 'Stream Emotes',
+    id: 'emote-raven-chibi',
+    category: 'Emotes',
     title: 'Raven Chibi Stream Emotes',
     description: 'Expressive chibi stream emote suite crafted with distinctive line-art and vibrant color grading for community engagement.',
     image: '/portfolio-assets/IMG_7457.JPG',
@@ -97,8 +99,8 @@ export const PORTFOLIO_DATA: PortfolioItem[] = [
     tag: 'Chibi Badges'
   },
   {
-    id: 'vtuber-yumeko-emotes',
-    category: 'Stream Emotes',
+    id: 'emote-yumeko',
+    category: 'Emotes',
     title: 'Yumeko Jabami Expression Suite',
     description: 'Custom anime stream reaction emotes with typography labels (Hi, Haha, Angry, LOL, Cry) for high-energy streaming.',
     image: '/portfolio-assets/IMG_7458.JPG',
@@ -108,7 +110,72 @@ export const PORTFOLIO_DATA: PortfolioItem[] = [
   },
 
   // ==========================================
-  // 3. POSTERS & EDITORIAL ART
+  // 3. YOUTUBE THUMBNAILS (High-CTR Packaging)
+  // ==========================================
+  {
+    id: 'yt-cybernetic-hands',
+    category: 'YouTube Thumbnails',
+    title: 'Cybernetic Headshot Transformation',
+    description: 'Official Nytrox Studio visual breakdown: Raw photo cutout transformed into a high-production cybernetic masterpiece with robotic hands and dark velvet grading.',
+    image: '/portfolio-assets/IMG_7464.JPG',
+    alt: 'Nytrox Studio Cybernetic Hands Packaging Transformation',
+    deliverables: ['Key Visual Packaging', 'High-CTR Master File', 'Lighting & Color Grading'],
+    tag: 'Creative Packaging',
+    featured: true
+  },
+  {
+    id: 'yt-431k-etsy',
+    category: 'YouTube Thumbnails',
+    title: '$431K eCommerce Breakdown Thumbnail',
+    description: 'Engineered e-commerce YouTube thumbnail with floating UI sales notifications, directional arrows, and punchy contrast.',
+    image: '/portfolio-assets/IMG_7462.JPG',
+    alt: '$431K eCommerce YouTube Thumbnail Design',
+    deliverables: ['High-CTR Thumbnail', 'A/B Test Variant', '1080p PSD File'],
+    tag: 'E-Commerce CTR'
+  },
+  {
+    id: 'yt-deserted-review',
+    category: 'YouTube Thumbnails',
+    title: 'Deserted Location Review Thumbnail',
+    description: 'Story-driven real-estate review thumbnail with 1-star graphic card, saturated sky backdrop, and dramatic facial expression.',
+    image: '/portfolio-assets/IMG_7463.JPG',
+    alt: 'Deserted Review YouTube Thumbnail Design',
+    deliverables: ['Click-Optimized Thumbnail', 'Focal Contrast Master', 'High-Res Asset'],
+    tag: 'Reaction Thumbnail'
+  },
+  {
+    id: 'yt-saas-balance',
+    category: 'YouTube Thumbnails',
+    title: '$18K SaaS Revenue Dashboard Thumbnail',
+    description: 'Clean finance creator thumbnail with a floating glass dashboard overlay, red trending curve, and calculated eye-tracking lines.',
+    image: '/portfolio-assets/IMG_7465.JPG',
+    alt: '$18K SaaS Revenue YouTube Thumbnail Design',
+    deliverables: ['Fintech YouTube Asset', 'Glass UI Element', '1080p Master Export'],
+    tag: 'Fintech Dashboard'
+  },
+  {
+    id: 'yt-copy-me',
+    category: 'YouTube Thumbnails',
+    title: 'Pinterest Strategy Thumbnail',
+    description: 'High-contrast reaction thumbnail engineered with strategic eye focal points for maximum CTR.',
+    image: 'https://cdn.enter.pro/resources/uid_100168087/4c12360f-7af9-48.jpg',
+    alt: 'Pinterest earnings YouTube thumbnail design',
+    deliverables: ['High-CTR Thumbnail', 'A/B Test Variant', 'Color Grading LUT'],
+    tag: 'High CTR'
+  },
+  {
+    id: 'yt-linkedin',
+    category: 'YouTube Thumbnails',
+    title: 'Creator Growth Mastery Thumbnail',
+    description: 'Bold typography and clean editorial styling thumbnail built for educational and growth-focused content.',
+    image: 'https://cdn.enter.pro/resources/uid_100168087/4ad9bd60-6f20-44.jpg',
+    alt: 'LinkedIn growth tips YouTube thumbnail design',
+    deliverables: ['Tutorial Thumbnail', 'Typography Master Asset', 'Mobile Optimized'],
+    tag: 'Editorial CTR'
+  },
+
+  // ==========================================
+  // 4. POSTERS & EDITORIAL ART
   // ==========================================
   {
     id: 'poster-esta-noche',
@@ -118,7 +185,8 @@ export const PORTFOLIO_DATA: PortfolioItem[] = [
     image: '/portfolio-assets/IMG_7467.JPG',
     alt: 'Esta Noche Anime Typography Poster',
     deliverables: ['Print-Ready Poster (300 DPI)', 'Social Media Cover', 'Album Artwork Asset'],
-    tag: 'Album Artwork'
+    tag: 'Album Artwork',
+    featured: true
   },
   {
     id: 'poster-noir-city',
@@ -172,7 +240,7 @@ export const PORTFOLIO_DATA: PortfolioItem[] = [
   },
 
   // ==========================================
-  // 4. 3D LOGOS & BRAND MARKS
+  // 5. 3D LOGOS & BRAND MARKS
   // ==========================================
   {
     id: 'logo-loxter-3d',
@@ -182,7 +250,8 @@ export const PORTFOLIO_DATA: PortfolioItem[] = [
     image: '/portfolio-assets/IMG_7470.JPG',
     alt: 'Loxter 3D Chrome Wordmark Logo',
     deliverables: ['3D Chrome Vector Master', 'Liquid Chrome Typography', 'Avatar & Banner Kit'],
-    tag: 'Liquid Chrome'
+    tag: 'Liquid Chrome',
+    featured: true
   },
   {
     id: 'logo-wavez-neon',
@@ -236,7 +305,7 @@ export const PORTFOLIO_DATA: PortfolioItem[] = [
   },
 
   // ==========================================
-  // 5. MASCOTS & AVATARS
+  // 6. MASCOTS & AVATARS
   // ==========================================
   {
     id: 'logo-anime-creator',
@@ -246,7 +315,8 @@ export const PORTFOLIO_DATA: PortfolioItem[] = [
     image: '/portfolio-assets/IMG_7461.JPG',
     alt: 'Anime Creator Mascot Profile Logo',
     deliverables: ['Vector Mascot Avatar', 'Social PFP Formats', 'Sticker Die-Cut File'],
-    tag: 'Mascot Avatar'
+    tag: 'Mascot Avatar',
+    featured: true
   },
   {
     id: 'logo-cartoon-transformation',
@@ -270,71 +340,7 @@ export const PORTFOLIO_DATA: PortfolioItem[] = [
   },
 
   // ==========================================
-  // 6. YOUTUBE PACKAGING & HIGH-CTR THUMBNAILS
-  // ==========================================
-  {
-    id: 'yt-cybernetic-hands',
-    category: 'YouTube Packaging',
-    title: 'Cybernetic Headshot Transformation',
-    description: 'Official Nytrox Studio visual breakdown: Raw photo cutout transformed into a high-production cybernetic masterpiece with robotic hands and dark velvet grading.',
-    image: '/portfolio-assets/IMG_7464.JPG',
-    alt: 'Nytrox Studio Cybernetic Hands Packaging Transformation',
-    deliverables: ['Key Visual Packaging', 'High-CTR Master File', 'Lighting & Color Grading'],
-    tag: 'Creative Direction'
-  },
-  {
-    id: 'yt-431k-etsy',
-    category: 'YouTube Packaging',
-    title: '$431K eCommerce Breakdown Thumbnail',
-    description: 'Engineered e-commerce YouTube thumbnail with floating UI sales notifications, directional arrows, and punchy contrast.',
-    image: '/portfolio-assets/IMG_7462.JPG',
-    alt: '$431K eCommerce YouTube Thumbnail Design',
-    deliverables: ['High-CTR Thumbnail', 'A/B Test Variant', '1080p PSD File'],
-    tag: 'E-Commerce CTR'
-  },
-  {
-    id: 'yt-deserted-review',
-    category: 'YouTube Packaging',
-    title: 'Deserted Location Review Thumbnail',
-    description: 'Story-driven real-estate review thumbnail with 1-star graphic card, saturated sky backdrop, and dramatic facial expression.',
-    image: '/portfolio-assets/IMG_7463.JPG',
-    alt: 'Deserted Review YouTube Thumbnail Design',
-    deliverables: ['Click-Optimized Thumbnail', 'Focal Contrast Master', 'High-Res Asset'],
-    tag: 'Reaction Thumbnail'
-  },
-  {
-    id: 'yt-saas-balance',
-    category: 'YouTube Packaging',
-    title: '$18K SaaS Revenue Dashboard Thumbnail',
-    description: 'Clean finance creator thumbnail with a floating glass dashboard overlay, red trending curve, and calculated eye-tracking lines.',
-    image: '/portfolio-assets/IMG_7465.JPG',
-    alt: '$18K SaaS Revenue YouTube Thumbnail Design',
-    deliverables: ['Fintech YouTube Asset', 'Glass UI Element', '1080p Master Export'],
-    tag: 'Fintech Dashboard'
-  },
-  {
-    id: 'yt-copy-me',
-    category: 'YouTube Packaging',
-    title: 'Pinterest Strategy Thumbnail',
-    description: 'High-contrast reaction thumbnail engineered with strategic eye focal points for maximum CTR.',
-    image: 'https://cdn.enter.pro/resources/uid_100168087/4c12360f-7af9-48.jpg',
-    alt: 'Pinterest earnings YouTube thumbnail design',
-    deliverables: ['High-CTR Thumbnail', 'A/B Test Variant', 'Color Grading LUT'],
-    tag: 'High CTR'
-  },
-  {
-    id: 'yt-linkedin',
-    category: 'YouTube Packaging',
-    title: 'Creator Growth Mastery Thumbnail',
-    description: 'Bold typography and clean editorial styling thumbnail built for educational and growth-focused content.',
-    image: 'https://cdn.enter.pro/resources/uid_100168087/4ad9bd60-6f20-44.jpg',
-    alt: 'LinkedIn growth tips YouTube thumbnail design',
-    deliverables: ['Tutorial Thumbnail', 'Typography Master Asset', 'Mobile Optimized'],
-    tag: 'Editorial CTR'
-  },
-
-  // ==========================================
-  // 7. SOCIAL & STREAM BANNERS
+  // 7. SOCIAL BANNERS
   // ==========================================
   {
     id: 'banner-spider',
@@ -385,7 +391,7 @@ export const SERVICES_DATA: ServiceItem[] = [
   },
   {
     id: 'youtube-packaging',
-    label: 'YouTube Packaging & CTR',
+    label: 'YouTube Thumbnails & Packaging',
     iconName: 'Tv',
     shortDesc: 'Click-generating thumbnails and channel header art that capture attention within 2.8 seconds.',
     deliverables: ['High-CTR Thumbnail Masters', 'A/B Test Variants', 'Channel Banner & Offline Screens', 'Color Grading LUTs'],
