@@ -1,12 +1,14 @@
 export interface PortfolioItem {
   id: string;
-  category: 'Logo Design' | 'Banner Design' | 'VTuber Design' | 'YouTube Banner';
+  category: 'Logo Design' | 'Poster Design' | 'Banner Design' | 'VTuber Design' | 'YouTube Banner';
   title: string;
   description: string;
   image: string;
+  videoSrc?: string;
+  mediaType?: 'image' | 'video';
   alt: string;
-  deliverables?: string[];
-  tag?: string;
+  deliverables: string[];
+  tag: string;
 }
 
 export interface ServiceItem {
@@ -15,6 +17,7 @@ export interface ServiceItem {
   iconName: string;
   shortDesc: string;
   features: string[];
+  deliverables: string[];
 }
 
 export interface ReviewItem {
