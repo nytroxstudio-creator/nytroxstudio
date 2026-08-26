@@ -1,6 +1,15 @@
+export type PortfolioCategory =
+  | 'VTuber & Live2D'
+  | 'Stream Emotes'
+  | 'Posters & Art'
+  | '3D Logos & Marks'
+  | 'Mascots & Avatars'
+  | 'YouTube Packaging'
+  | 'Social Banners';
+
 export interface PortfolioItem {
   id: string;
-  category: 'Logo Design' | 'Poster Design' | 'Banner Design' | 'VTuber Design' | 'YouTube Banner';
+  category: PortfolioCategory;
   title: string;
   description: string;
   image: string;

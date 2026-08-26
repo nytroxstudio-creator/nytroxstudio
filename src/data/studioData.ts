@@ -1,4 +1,4 @@
-import { PortfolioItem, ServiceItem, ReviewItem, StatItem } from '../types';
+import { PortfolioItem, ServiceItem, ReviewItem, StatItem, PortfolioCategory } from '../types';
 
 export type ProjectItem = PortfolioItem;
 
@@ -25,86 +25,104 @@ export const STUDIO_INFO = {
 export const STUDIO_STATS = STUDIO_INFO.stats;
 
 export const PORTFOLIO_DATA: PortfolioItem[] = [
-  // --- VTUBER DESIGN & LIVE2D RIGGING SHOWCASES (Videos & Emotes) ---
+  // ==========================================
+  // 1. VTUBER & LIVE2D MODELS (Previews & Full Characters)
+  // ==========================================
   {
     id: 'vtuber-gothic-demon-video',
-    category: 'VTuber Design',
-    title: 'Gothic Demon VTuber Rigging Reel',
-    description: 'Full-body Live2D character rigging showcase featuring fluid head physics, multi-layered eye blinking, dynamic breathing, and physics pendulums.',
+    category: 'VTuber & Live2D',
+    title: 'Gothic Demon VTuber Model',
+    description: 'Full-body Live2D character model preview featuring fluid head physics, multi-layered eye blinking, dynamic breathing, and hair physics.',
     image: '/portfolio-assets/IMG_7456.JPG',
     videoSrc: '/portfolio-assets/quality_restoration_20260826055256784.mp4',
     mediaType: 'video',
-    alt: 'Gothic Demon VTuber Live2D Rigging Motion Reel',
-    deliverables: ['Live2D Model Rig', 'VTubeStudio Profile', 'Physics Calibration', 'Stream Motion Reel'],
-    tag: 'Live2D Motion'
+    alt: 'Gothic Demon VTuber Live2D Rigging Motion Preview',
+    deliverables: ['Live2D Model Rig', 'VTubeStudio Setup', 'Physics Calibration', 'Full Motion Preview'],
+    tag: 'Live2D Preview'
   },
   {
     id: 'vtuber-cyber-ronin-video',
-    category: 'VTuber Design',
-    title: 'Cyber Ronin Character Debut Showcase',
-    description: 'High-tier VTuber character animation showcase with katana motion, particle aura fx, expression hotkeys, and stream-ready tracking.',
+    category: 'VTuber & Live2D',
+    title: 'Cyber Ronin VTuber Model',
+    description: 'High-tier VTuber character animation preview with katana physics, particle aura fx, expression hotkeys, and stream-ready tracking.',
     image: '/portfolio-assets/IMG_7471.JPG',
     videoSrc: '/portfolio-assets/quality_restoration_20260826055412441.mp4',
     mediaType: 'video',
-    alt: 'Cyber Ronin VTuber Character Animation Debut Video',
-    deliverables: ['Character Animation Reel', 'Full-Body Tracking', 'Custom Idle Cycles', 'Debut Video Asset'],
-    tag: 'Debut Reel'
+    alt: 'Cyber Ronin VTuber Character Animation Debut Preview',
+    deliverables: ['Full Character Model', 'VTubeStudio Tracking', 'Custom Idle Cycles', 'Expression Hotkeys'],
+    tag: 'Model Preview'
   },
   {
+    id: 'vtuber-ronin',
+    category: 'VTuber & Live2D',
+    title: 'Ronin VTuber Model Concept',
+    description: 'Custom male VTuber model with a moody monochrome & dark wardrobe, katana details, and fluid layer cutouts.',
+    image: 'https://cdn.enter.pro/resources/uid_100168087/ecb6b7d7-10e6-4e.jpg',
+    alt: 'Male anime VTuber character design in ronin outfit',
+    deliverables: ['Full-Body Character Concept', 'Rigging-Ready Layers', 'Emote Sheet'],
+    tag: 'Character Model'
+  },
+  {
+    id: 'vtuber-vampire',
+    category: 'VTuber & Live2D',
+    title: 'Vampire Demoness VTuber Model',
+    description: 'Gothic demon-vampire VTuber design with sculpted horns, dark velvet textures, and intricate lace detailing.',
+    image: 'https://cdn.enter.pro/resources/uid_100168087/d9635aa8-e049-4e.jpg',
+    alt: 'Female demon vampire VTuber character design',
+    deliverables: ['Character Sheet (3 Angles)', 'Expression Pack', 'Debut Visuals'],
+    tag: 'Character Model'
+  },
+
+  // ==========================================
+  // 2. STREAM EMOTES & BADGES
+  // ==========================================
+  {
     id: 'vtuber-makima-emotes',
-    category: 'VTuber Design',
+    category: 'Stream Emotes',
     title: 'Makima 8-Piece Anime Emote Pack',
     description: 'Custom high-detail anime expression and stream emote pack featuring wave, angry, crying, sleeping, and glowing blushing states.',
     image: '/portfolio-assets/IMG_7456.JPG',
     alt: 'Makima Anime 8-Piece Stream Emote Pack',
     deliverables: ['8 Custom Emotes', 'Twitch / Discord Sizes', 'Badge PNGs (28px to 512px)'],
-    tag: 'Emote Pack'
+    tag: 'Emote Suite'
   },
   {
     id: 'vtuber-raven-chibi',
-    category: 'VTuber Design',
+    category: 'Stream Emotes',
     title: 'Raven Chibi Stream Emotes',
     description: 'Expressive chibi stream emote suite crafted with distinctive line-art and vibrant color grading for community engagement.',
     image: '/portfolio-assets/IMG_7457.JPG',
     alt: 'Raven Chibi Twitch and Discord Emotes',
     deliverables: ['5 Chibi Expressions', 'Twitch Tier Badges', 'Discord Emote Kit'],
-    tag: 'Chibi Emotes'
+    tag: 'Chibi Badges'
   },
   {
     id: 'vtuber-yumeko-emotes',
-    category: 'VTuber Design',
+    category: 'Stream Emotes',
     title: 'Yumeko Jabami Expression Suite',
     description: 'Custom anime stream reaction emotes with typography labels (Hi, Haha, Angry, LOL, Cry) for high-energy streaming.',
     image: '/portfolio-assets/IMG_7458.JPG',
     alt: 'Yumeko Jabami Stream Emotes Sheet',
     deliverables: ['6 Anime Stream Badges', 'Emote Master Sheet', 'Community Badges'],
-    tag: 'Stream Badges'
-  },
-  {
-    id: 'vtuber-manga-art',
-    category: 'VTuber Design',
-    title: 'Indie Manga Character Concept',
-    description: 'Hand-inked indie pop manga character illustration with expressive floral eyes and vintage comic book aesthetic.',
-    image: '/portfolio-assets/IMG_7472.JPG',
-    alt: 'Indie Manga Character Concept Illustration',
-    deliverables: ['Character Concept Art', 'Color Palette Sheet', 'Sticker & Merch Illustration'],
-    tag: 'Manga Concept'
+    tag: 'Reaction Emotes'
   },
 
-  // --- POSTER DESIGN & EDITORIAL ARTWORK ---
+  // ==========================================
+  // 3. POSTERS & EDITORIAL ART
+  // ==========================================
   {
     id: 'poster-esta-noche',
-    category: 'Poster Design',
+    category: 'Posters & Art',
     title: 'Esta Noche — Anime Typography Poster',
     description: 'Cinematic glowing typography poster combining streetwear anime portraiture with dynamic red ambient lighting.',
     image: '/portfolio-assets/IMG_7467.JPG',
     alt: 'Esta Noche Anime Typography Poster',
     deliverables: ['Print-Ready Poster (300 DPI)', 'Social Media Cover', 'Album Artwork Asset'],
-    tag: 'Album Cover'
+    tag: 'Album Artwork'
   },
   {
     id: 'poster-noir-city',
-    category: 'Poster Design',
+    category: 'Posters & Art',
     title: 'Noir City Cyberpunk Poster',
     description: 'High-contrast black-and-crimson noir poster featuring a halftone portrait, geometric wireframe eye motif, and muscle car silhouette.',
     image: '/portfolio-assets/IMG_7473.JPG',
@@ -114,7 +132,7 @@ export const PORTFOLIO_DATA: PortfolioItem[] = [
   },
   {
     id: 'poster-internal-riot',
-    category: 'Poster Design',
+    category: 'Posters & Art',
     title: 'Internal Riot Failure Poster',
     description: 'Acid cyberpunk editorial poster with halftone photographic portrait clipped through heavy condensed typography on hot magenta.',
     image: '/portfolio-assets/IMG_7474.JPG',
@@ -124,7 +142,7 @@ export const PORTFOLIO_DATA: PortfolioItem[] = [
   },
   {
     id: 'poster-y2k-closer',
-    category: 'Poster Design',
+    category: 'Posters & Art',
     title: "It's Closer Than You Think Poster",
     description: 'Y2K retro-futuristic halftone poster featuring chrome sports sunglasses with blimp reflection and bold red typography.',
     image: '/portfolio-assets/IMG_7475.JPG',
@@ -134,59 +152,95 @@ export const PORTFOLIO_DATA: PortfolioItem[] = [
   },
   {
     id: 'poster-kevin-langue',
-    category: 'Poster Design',
+    category: 'Posters & Art',
     title: 'The Kevin Langue Show Poster',
     description: 'Raw editorial cutout poster with hand-drawn crayon star and crown doodle aesthetics crafted for podcast and show branding.',
     image: '/portfolio-assets/IMG_7469.JPG',
     alt: 'The Kevin Langue Show Editorial Poster',
     deliverables: ['Show Promo Art', 'Podcast Cover Asset', 'Merchandise Print File'],
-    tag: 'Editorial Art'
+    tag: 'Editorial Print'
+  },
+  {
+    id: 'vtuber-manga-art',
+    category: 'Posters & Art',
+    title: 'Indie Manga Character Illustration',
+    description: 'Hand-inked indie pop manga character illustration with expressive floral eyes and vintage comic book aesthetic.',
+    image: '/portfolio-assets/IMG_7472.JPG',
+    alt: 'Indie Manga Character Concept Illustration',
+    deliverables: ['Character Concept Art', 'Color Palette Sheet', 'Sticker & Merch Illustration'],
+    tag: 'Manga Illustration'
   },
 
-  // --- LOGO DESIGN, MASCOTS & 3D TYPOGRAPHY ---
+  // ==========================================
+  // 4. 3D LOGOS & BRAND MARKS
+  // ==========================================
   {
     id: 'logo-loxter-3d',
-    category: 'Logo Design',
+    category: '3D Logos & Marks',
     title: 'Loxter 3D Chrome Identity',
     description: 'Futuristic 3D liquid chrome wordmark logo combined with stylized cyberpunk female character visuals.',
     image: '/portfolio-assets/IMG_7470.JPG',
     alt: 'Loxter 3D Chrome Wordmark Logo',
     deliverables: ['3D Chrome Vector Master', 'Liquid Chrome Typography', 'Avatar & Banner Kit'],
-    tag: '3D Chrome'
+    tag: 'Liquid Chrome'
   },
   {
     id: 'logo-wavez-neon',
-    category: 'Logo Design',
+    category: '3D Logos & Marks',
     title: 'Wavez Neon Liquid Wordmark',
     description: 'Vibrant cyan neon 3D bubble typography logo with fluid refractive highlights and deep ambient glow.',
     image: '/portfolio-assets/IMG_7468.JPG',
     alt: 'Wavez Neon 3D Liquid Bubble Logo',
     deliverables: ['3D Wordmark Asset', 'Transparent PNG Masters', 'Apparel & Sticker Print'],
-    tag: '3D Liquid'
+    tag: '3D Bubble Type'
   },
   {
     id: 'logo-bn-streetwear',
-    category: 'Logo Design',
+    category: '3D Logos & Marks',
     title: 'BN Streetwear Melting Logo',
     description: 'Bold melting silhouette emblem with Swiss cheese cutout accents on vibrant orange for an urban apparel brand.',
     image: '/portfolio-assets/IMG_7460.JPG',
     alt: 'BN Streetwear Melting Typography Logo',
     deliverables: ['Vector Monogram Mark', 'Embroidery Vector File', 'Brand Guidelines Sheet'],
-    tag: 'Streetwear'
+    tag: 'Streetwear Mark'
   },
   {
     id: 'logo-starhead-minimal',
-    category: 'Logo Design',
+    category: '3D Logos & Marks',
     title: 'Inverted Starhead Silhouette Mark',
     description: 'High-contrast minimal silhouette logo with a spiky starhead accent for an underground music & apparel identity.',
     image: '/portfolio-assets/IMG_7459.JPG',
     alt: 'Inverted Starhead Minimal Silhouette Logo',
     deliverables: ['Vector Silhouette Master', 'Screenprint Asset', 'Merch Vector Kit'],
-    tag: 'Minimal Icon'
+    tag: 'Minimal Silhouette'
   },
   {
+    id: 'logo-keigo',
+    category: '3D Logos & Marks',
+    title: 'Keigo Esports Emblem',
+    description: 'Sharp geometric type with a demon-mask accent engineered for a high-energy gaming & esports identity.',
+    image: 'https://cdn.enter.pro/resources/uid_100168087/6cc7fca6-0fe9-46.jpg',
+    alt: 'Keigo logo design',
+    deliverables: ['Geometric Typeface', 'Oni Mask Emblem', 'Stream Overlay Kit'],
+    tag: 'Esports Emblem'
+  },
+  {
+    id: 'logo-kozo',
+    category: '3D Logos & Marks',
+    title: 'Kozo Luxury Monogram',
+    description: 'Ornate calligraphic monogram framed in a striking symmetry pattern for a luxury streetwear label.',
+    image: 'https://cdn.enter.pro/resources/uid_100168087/06f7621b-33e8-40.jpg',
+    alt: 'Kozo monogram logo design',
+    deliverables: ['Calligraphic Monogram', 'Embossing Vector', 'Luxury Guidelines'],
+    tag: 'Luxury Monogram'
+  },
+
+  // ==========================================
+  // 5. MASCOTS & AVATARS
+  // ==========================================
+  {
     id: 'logo-anime-creator',
-    category: 'Logo Design',
+    category: 'Mascots & Avatars',
     title: 'Anime Creator Mascot Avatar',
     description: 'Custom stylized anime portrait mascot logo with comic halftone backdrop and sticker outline for creator branding.',
     image: '/portfolio-assets/IMG_7461.JPG',
@@ -196,29 +250,31 @@ export const PORTFOLIO_DATA: PortfolioItem[] = [
   },
   {
     id: 'logo-cartoon-transformation',
-    category: 'Logo Design',
-    title: 'Creator Cartoon Transformation',
+    category: 'Mascots & Avatars',
+    title: 'Creator-to-Cartoon Mascot',
     description: 'Direct photo-to-cartoon character mascot transformation with vibrant vector line-art and YouTube gaming aesthetic.',
     image: '/portfolio-assets/IMG_7476.JPG',
     alt: 'Creator Photo to Cartoon Mascot Transformation',
     deliverables: ['Custom Cartoon Character', 'Vector Mascot Asset', 'Channel Branding PFP'],
-    tag: 'Cartoon Mascot'
+    tag: 'Photo Transformation'
   },
   {
     id: 'logo-ff-gamer',
-    category: 'Logo Design',
+    category: 'Mascots & Avatars',
     title: 'FF Anime Gamer Mascot',
     description: 'Clean anime hoodie creator avatar with radial comic rays engineered for YouTube and Twitch profile identities.',
     image: '/portfolio-assets/IMG_7477.JPG',
     alt: 'FF Anime Gamer Mascot Profile Logo',
     deliverables: ['Anime Gamer PFP', 'Discord Icon Pack', 'Full Vector Master'],
-    tag: 'Gamer Mascot'
+    tag: 'Gamer Avatar'
   },
 
-  // --- YOUTUBE PACKAGING & HIGH-CTR THUMBNAILS ---
+  // ==========================================
+  // 6. YOUTUBE PACKAGING & HIGH-CTR THUMBNAILS
+  // ==========================================
   {
     id: 'yt-cybernetic-hands',
-    category: 'YouTube Banner',
+    category: 'YouTube Packaging',
     title: 'Cybernetic Headshot Transformation',
     description: 'Official Nytrox Studio visual breakdown: Raw photo cutout transformed into a high-production cybernetic masterpiece with robotic hands and dark velvet grading.',
     image: '/portfolio-assets/IMG_7464.JPG',
@@ -228,17 +284,17 @@ export const PORTFOLIO_DATA: PortfolioItem[] = [
   },
   {
     id: 'yt-431k-etsy',
-    category: 'YouTube Banner',
+    category: 'YouTube Packaging',
     title: '$431K eCommerce Breakdown Thumbnail',
     description: 'Engineered e-commerce YouTube thumbnail with floating UI sales notifications, directional arrows, and punchy contrast.',
     image: '/portfolio-assets/IMG_7462.JPG',
     alt: '$431K eCommerce YouTube Thumbnail Design',
     deliverables: ['High-CTR Thumbnail', 'A/B Test Variant', '1080p PSD File'],
-    tag: 'High CTR'
+    tag: 'E-Commerce CTR'
   },
   {
     id: 'yt-deserted-review',
-    category: 'YouTube Banner',
+    category: 'YouTube Packaging',
     title: 'Deserted Location Review Thumbnail',
     description: 'Story-driven real-estate review thumbnail with 1-star graphic card, saturated sky backdrop, and dramatic facial expression.',
     image: '/portfolio-assets/IMG_7463.JPG',
@@ -248,35 +304,57 @@ export const PORTFOLIO_DATA: PortfolioItem[] = [
   },
   {
     id: 'yt-saas-balance',
-    category: 'YouTube Banner',
+    category: 'YouTube Packaging',
     title: '$18K SaaS Revenue Dashboard Thumbnail',
     description: 'Clean finance creator thumbnail with a floating glass dashboard overlay, red trending curve, and calculated eye-tracking lines.',
     image: '/portfolio-assets/IMG_7465.JPG',
     alt: '$18K SaaS Revenue YouTube Thumbnail Design',
     deliverables: ['Fintech YouTube Asset', 'Glass UI Element', '1080p Master Export'],
-    tag: 'Finance Growth'
+    tag: 'Fintech Dashboard'
+  },
+  {
+    id: 'yt-copy-me',
+    category: 'YouTube Packaging',
+    title: 'Pinterest Strategy Thumbnail',
+    description: 'High-contrast reaction thumbnail engineered with strategic eye focal points for maximum CTR.',
+    image: 'https://cdn.enter.pro/resources/uid_100168087/4c12360f-7af9-48.jpg',
+    alt: 'Pinterest earnings YouTube thumbnail design',
+    deliverables: ['High-CTR Thumbnail', 'A/B Test Variant', 'Color Grading LUT'],
+    tag: 'High CTR'
+  },
+  {
+    id: 'yt-linkedin',
+    category: 'YouTube Packaging',
+    title: 'Creator Growth Mastery Thumbnail',
+    description: 'Bold typography and clean editorial styling thumbnail built for educational and growth-focused content.',
+    image: 'https://cdn.enter.pro/resources/uid_100168087/4ad9bd60-6f20-44.jpg',
+    alt: 'LinkedIn growth tips YouTube thumbnail design',
+    deliverables: ['Tutorial Thumbnail', 'Typography Master Asset', 'Mobile Optimized'],
+    tag: 'Editorial CTR'
   },
 
-  // --- BANNER DESIGN ---
+  // ==========================================
+  // 7. SOCIAL & STREAM BANNERS
+  // ==========================================
   {
     id: 'banner-spider',
-    category: 'Banner Design',
+    category: 'Social Banners',
     title: 'Web-Slinger Comic Banner',
     description: 'High-energy comic banner with dynamic speech bubbles, halftones, and cinematic action depth.',
     image: 'https://cdn.enter.pro/resources/uid_100168087/aca0165b-4842-4f.jpg',
     alt: 'Comic-style Spider-Man themed banner design',
     deliverables: ['YouTube Channel Art', 'Twitter/X Header', 'Twitch Offline Screen'],
-    tag: 'Comic Style'
+    tag: 'Comic Banner'
   },
   {
     id: 'banner-vip',
-    category: 'Banner Design',
+    category: 'Social Banners',
     title: 'Info VIP Anime Banner',
     description: 'Fiery anime-inspired promotional banner built to highlight VIP membership perks and exclusive community drops.',
     image: 'https://cdn.enter.pro/resources/uid_100168087/83d42970-490c-42.jpg',
     alt: 'Anime VIP info banner design',
     deliverables: ['Discord Banner', 'Event Promo Graphics', 'Membership Badges'],
-    tag: 'Anime Promo'
+    tag: 'Discord Promo'
   }
 ];
 

@@ -1,16 +1,26 @@
 import React, { useState } from 'react';
 import { Sparkles, Eye, ArrowUpRight, Play } from 'lucide-react';
 import { PORTFOLIO_DATA, ProjectItem } from '../data/studioData';
+import { PortfolioCategory } from '../types';
 
 interface PortfolioProps {
   onSelectProject: (id: string) => void;
   onOpenContact: () => void;
 }
 
-const CATEGORIES = ['All', 'Logo Design', 'Poster Design', 'VTuber Design', 'YouTube Banner', 'Banner Design'] as const;
+const CATEGORIES: { label: string; value: 'All' | PortfolioCategory }[] = [
+  { label: 'All Works', value: 'All' },
+  { label: 'VTuber & Live2D', value: 'VTuber & Live2D' },
+  { label: 'Stream Emotes', value: 'Stream Emotes' },
+  { label: 'Posters & Art', value: 'Posters & Art' },
+  { label: '3D Logos & Marks', value: '3D Logos & Marks' },
+  { label: 'Mascots & Avatars', value: 'Mascots & Avatars' },
+  { label: 'YouTube Packaging', value: 'YouTube Packaging' },
+  { label: 'Social Banners', value: 'Social Banners' },
+];
 
 export const Portfolio: React.FC<PortfolioProps> = ({ onSelectProject, onOpenContact }) => {
-  const [activeCategory, setActiveCategory] = useState<string>('All');
+  const [activeCategory, setActiveCategory] = useState<'All' | PortfolioCategory>('All');
 
   const filteredProjects = activeCategory === 'All'
     ? PORTFOLIO_DATA
@@ -28,14 +38,14 @@ export const Portfolio: React.FC<PortfolioProps> = ({ onSelectProject, onOpenCon
           <div className="max-w-2xl">
             <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full glass-card border border-white/15 text-[11px] font-semibold tracking-widest uppercase text-zinc-300 mb-4 shimmer-badge">
               <Sparkles className="w-3.5 h-3.5 text-zinc-400" />
-              <span>Curated Works ({PORTFOLIO_DATA.length} Projects)</span>
+              <span>Curated Studio Showcase ({PORTFOLIO_DATA.length} Projects)</span>
             </div>
 
             <h2 className="text-3xl sm:text-5xl font-black font-display tracking-tight text-white leading-tight">
               Selected Works & <span className="text-gradient-silver">Visual Showcase</span>
             </h2>
             <p className="text-sm sm:text-base text-zinc-400 mt-3 leading-relaxed">
-              Explore our latest 3D chrome logos, Live2D rigging reels, cinematic posters, and high-CTR creator packaging.
+              Explore our organized collections across Live2D character models, stream emote suites, 3D chrome typography, and editorial posters.
             </p>
           </div>
 
@@ -49,21 +59,30 @@ export const Portfolio: React.FC<PortfolioProps> = ({ onSelectProject, onOpenCon
           </button>
         </div>
 
-        {/* Category Filter Pills */}
+        {/* Category Filter Tabs */}
         <div className="flex items-center gap-2 overflow-x-auto pb-4 mb-10 scrollbar-none">
           {CATEGORIES.map((cat) => {
-            const isSelected = activeCategory === cat;
+            const isSelected = activeCategory === cat.value;
+            const count = cat.value === 'All'
+              ? PORTFOLIO_DATA.length
+              : PORTFOLIO_DATA.filter((p) => p.category === cat.value).length;
+
             return (
               <button
-                key={cat}
-                onClick={() => setActiveCategory(cat)}
-                className={`px-5 py-2.5 rounded-full text-xs font-semibold tracking-wider uppercase whitespace-nowrap transition-all duration-300 ${
+                key={cat.value}
+                onClick={() => setActiveCategory(cat.value)}
+                className={`px-4 py-2 rounded-full text-xs font-semibold tracking-wider whitespace-nowrap transition-all duration-300 flex items-center gap-1.5 ${
                   isSelected
                     ? 'bg-white text-black shadow-glow-sm scale-105'
                     : 'glass-card border border-white/10 text-zinc-400 hover:text-white hover:border-white/25 hover:bg-white/5'
                 }`}
               >
-                {cat}
+                <span>{cat.label}</span>
+                <span className={`text-[10px] px-1.5 py-0.2 rounded-full ${
+                  isSelected ? 'bg-black/20 text-black' : 'bg-white/10 text-zinc-400'
+                }`}>
+                  {count}
+                </span>
               </button>
             );
           })}
@@ -92,9 +111,9 @@ export const Portfolio: React.FC<PortfolioProps> = ({ onSelectProject, onOpenCon
                         autoPlay
                         className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                       />
-                      <div className="absolute top-3.5 right-3.5 px-2.5 py-1 rounded-full bg-black/80 backdrop-blur-md border border-white/20 text-[10px] font-bold uppercase tracking-wider text-white flex items-center gap-1 shadow-md">
+                      <div className="absolute top-3.5 right-3.5 px-2.5 py-1 rounded-full bg-black/80 backdrop-blur-md border border-white/20 text-[10px] font-bold uppercase tracking-wider text-white flex items-center gap-1.5 shadow-md">
                         <Play className="w-2.5 h-2.5 fill-white text-white" />
-                        <span>Video Reel</span>
+                        <span>VTuber Preview</span>
                       </div>
                     </div>
                   ) : (
@@ -108,9 +127,9 @@ export const Portfolio: React.FC<PortfolioProps> = ({ onSelectProject, onOpenCon
 
                   <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/20 to-transparent opacity-60 group-hover:opacity-40 transition-opacity" />
 
-                  {/* Top Category Badge */}
+                  {/* Top Sub-Tag Badge */}
                   <div className="absolute top-3.5 left-3.5">
-                    <span className="px-3 py-1 rounded-full bg-black/70 backdrop-blur-md border border-white/15 text-[10px] uppercase font-bold tracking-widest text-zinc-200">
+                    <span className="px-3 py-1 rounded-full bg-black/75 backdrop-blur-md border border-white/15 text-[10px] uppercase font-bold tracking-wider text-zinc-200">
                       {project.tag}
                     </span>
                   </div>
@@ -126,7 +145,8 @@ export const Portfolio: React.FC<PortfolioProps> = ({ onSelectProject, onOpenCon
                 {/* Card Info */}
                 <div className="p-5 sm:p-6 flex-1 flex flex-col justify-between space-y-3">
                   <div>
-                    <span className="text-[10px] uppercase font-bold tracking-wider text-zinc-400 block mb-1">
+                    {/* Exact Specific Category Under Image */}
+                    <span className="text-[10px] uppercase font-bold tracking-widest text-zinc-400 block mb-1">
                       {project.category}
                     </span>
                     <h3 className="text-base sm:text-lg font-bold font-display text-white group-hover:text-gradient-silver transition-colors leading-snug">
@@ -152,6 +172,13 @@ export const Portfolio: React.FC<PortfolioProps> = ({ onSelectProject, onOpenCon
               </div>
             );
           })}
+        </div>
+
+        {/* Subtle, non-bold disclaimer note at bottom of portfolio */}
+        <div className="mt-16 text-center border-t border-white/5 pt-8">
+          <p className="text-[11px] sm:text-xs text-zinc-500 font-normal tracking-wide max-w-2xl mx-auto leading-relaxed">
+            * Note: Some showcase visuals and reference concepts above are featured for demonstration; all displayed design styles, Live2D rigging, 3D typography, and custom packaging can be tailored to your exact specifications.
+          </p>
         </div>
 
       </div>
