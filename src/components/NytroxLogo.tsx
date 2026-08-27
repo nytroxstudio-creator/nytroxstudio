@@ -9,29 +9,42 @@ interface NytroxLogoProps {
 export const NytroxLogo: React.FC<NytroxLogoProps> = ({ className = '', size = 'hero' }) => {
   if (size === 'nav') {
     return (
-      <div className={`inline-flex items-center select-none ${className}`}>
-        <img
-          src={NYTROX_LOGO_BASE64}
-          alt="Nytrox Studio"
-          className="h-8 sm:h-9 w-auto object-contain brightness-105 drop-shadow-[0_0_6px_rgba(255,255,255,0.12)] transition-all duration-300 hover:drop-shadow-[0_0_10px_rgba(255,255,255,0.2)] hover:scale-105"
-        />
+      <div className={`inline-flex items-center gap-2.5 select-none group ${className}`}>
+        {/* Round PFP Avatar Logo */}
+        <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full overflow-hidden border border-white/25 p-0.5 bg-zinc-950 shadow-[0_0_10px_rgba(255,255,255,0.12)] group-hover:border-white/50 group-hover:shadow-[0_0_16px_rgba(255,255,255,0.25)] group-hover:scale-105 transition-all duration-300 shrink-0">
+          <img
+            src="/nytrox-logo.jpg"
+            alt="Nytrox Studio Logo"
+            className="w-full h-full object-cover rounded-full"
+          />
+        </div>
+        <span className="font-display font-black text-sm sm:text-base tracking-tight text-white group-hover:text-zinc-200 transition-colors flex items-center gap-1">
+          <span>Nytrox Studio</span>
+          <span className="text-xs text-zinc-400">✦</span>
+        </span>
       </div>
     );
   }
 
   if (size === 'footer') {
     return (
-      <div className={`inline-flex items-center select-none ${className}`}>
-        <img
-          src={NYTROX_LOGO_BASE64}
-          alt="Nytrox Studio"
-          className="h-7 sm:h-8 w-auto object-contain brightness-100 drop-shadow-[0_0_4px_rgba(255,255,255,0.1)]"
-        />
+      <div className={`inline-flex items-center gap-3 select-none group ${className}`}>
+        <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full overflow-hidden border border-white/20 p-0.5 bg-zinc-950 shadow-[0_0_8px_rgba(255,255,255,0.08)] group-hover:border-white/40 transition-all duration-300 shrink-0">
+          <img
+            src="/nytrox-logo.jpg"
+            alt="Nytrox Studio Logo"
+            className="w-full h-full object-cover rounded-full"
+          />
+        </div>
+        <span className="font-display font-black text-base sm:text-lg tracking-tight text-white flex items-center gap-1">
+          <span>Nytrox Studio</span>
+          <span className="text-xs text-zinc-400">✦</span>
+        </span>
       </div>
     );
   }
 
-  // Hero Display: Tightly Contained ~2cm Glow Radius (Zero Page Bleed)
+  // Hero Display: Tightly Contained ~2cm Glow Radius
   return (
     <div className={`relative inline-flex flex-col items-center justify-center select-none group cursor-pointer ${className}`}>
       {/* Tight ~2cm Halo Contour Directly Behind Text */}
