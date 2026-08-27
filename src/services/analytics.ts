@@ -28,7 +28,7 @@ const UNIQUE_USER_KEY = 'nytrox_real_unique_user';
 const ADMIN_AUTH_KEY = 'nytrox_admin_token';
 const ADMIN_PIN_KEY = 'nytrox_admin_pin';
 
-const DEFAULT_PIN = 'nytrox2026';
+const DEFAULT_PIN = '6969';
 
 // Real-time presence tracking via BroadcastChannel and Heartbeats
 const PRESENCE_CHANNEL = 'nytrox_live_presence';

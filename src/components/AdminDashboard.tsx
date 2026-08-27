@@ -179,7 +179,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ isOpen, onClose 
                     setPinInput(e.target.value);
                     setPinError(false);
                   }}
-                  placeholder="Master PIN (Default: nytrox2026)"
+                  placeholder="Type here"
                   autoFocus
                   className={`w-full px-4 py-3.5 rounded-xl bg-white/5 border text-sm text-white placeholder-zinc-500 focus:outline-none transition-all text-center tracking-widest ${
                     pinError ? 'border-red-500 bg-red-500/10' : 'border-white/15 focus:border-white/40 focus:bg-white/10'
