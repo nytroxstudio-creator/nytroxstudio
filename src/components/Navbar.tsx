@@ -1,201 +1,211 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Menu, X, ArrowUpRight, Sparkles } from 'lucide-react';
 import { NytroxLogo } from './NytroxLogo';
+import { ArrowUpRight } from 'lucide-react';
 
 interface NavbarProps {
   onOpenContact: () => void;
+  onOpenAdmin?: () => void;
 }
 
-const NAV_LINKS = [
-  { label: 'Home', id: 'home' },
-  { label: 'About', id: 'about' },
-  { label: 'Capabilities', id: 'capabilities' },
-  { label: 'Portfolio', id: 'portfolio' },
-  { label: 'Reviews', id: 'reviews' },
+const NAV_ITEMS = [
+  { label: 'Home', href: '#home' },
+  { label: 'About', href: '#about' },
+  { label: 'Capabilities', href: '#capabilities' },
+  { label: 'Portfolio', href: '#portfolio' },
+  { label: 'Reviews', href: '#reviews' },
 ];
 
-export const Navbar: React.FC<NavbarProps> = ({ onOpenContact }) => {
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [activeSection, setActiveSection] = useState('home');
-  const [hoveredId, setHoveredId] = useState<string | null>(null);
+export const Navbar: React.FC<NavbarProps> = ({ onOpenContact, onOpenAdmin }) => {
+  const [activeSection, setActiveSection] = useState<string>('#home');
+  const [hoveredSection, setHoveredSection] = useState<string | null>(null);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
+  const [isScrolled, setIsScrolled] = useState<boolean>(false);
 
-  // Sliding indicator positioning
-  const navContainerRef = useRef<HTMLDivElement | null>(null);
-  const navButtonRefs = useRef<{ [key: string]: HTMLButtonElement | null }>({});
-  const [indicatorStyle, setIndicatorStyle] = useState<{ left: number; width: number; opacity: number }>({
+  // Measure pill geometry for the fluid sliding glass capsule
+  const navContainerRef = useRef<HTMLDivElement>(null);
+  const [pillStyle, setPillStyle] = useState<{ left: number; width: number; opacity: number }>({
     left: 0,
     width: 0,
     opacity: 0,
   });
 
-  // Track active section on scroll
-  useEffect(() => {
-    let ticking = false;
-    const handleScroll = () => {
-      if (!ticking) {
-        window.requestAnimationFrame(() => {
-          setIsScrolled(window.scrollY > 20);
+  const targetSection = hoveredSection || activeSection;
 
-          const sections = ['home', 'about', 'capabilities', 'portfolio', 'reviews'];
-          for (const sectionId of sections) {
-            const el = document.getElementById(sectionId);
-            if (el) {
-              const rect = el.getBoundingClientRect();
-              if (rect.top <= 160 && rect.bottom >= 160) {
-                setActiveSection(sectionId);
-                break;
-              }
-            }
-          }
-          ticking = false;
-        });
-        ticking = true;
+  // Track active section and navbar blur on scroll
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 20);
+
+      const sections = NAV_ITEMS.map((item) => item.href.substring(1));
+      const scrollPosition = window.scrollY + 200;
+
+      for (let i = sections.length - 1; i >= 0; i--) {
+        const el = document.getElementById(sections[i]);
+        if (el && el.offsetTop <= scrollPosition) {
+          setActiveSection(`#${sections[i]}`);
+          break;
+        }
       }
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   // Update sliding glass pill position smoothly
   useEffect(() => {
-    const targetId = hoveredId || activeSection;
-    const targetEl = navButtonRefs.current[targetId];
-    const containerEl = navContainerRef.current;
+    if (!navContainerRef.current) return;
 
-    if (targetEl && containerEl) {
-      const containerRect = containerEl.getBoundingClientRect();
-      const targetRect = targetEl.getBoundingClientRect();
+    const activeBtn = navContainerRef.current.querySelector(
+      `[data-nav="${targetSection}"]`
+    ) as HTMLElement;
 
-      setIndicatorStyle({
-        left: targetRect.left - containerRect.left,
-        width: targetRect.width,
+    if (activeBtn) {
+      const containerRect = navContainerRef.current.getBoundingClientRect();
+      const btnRect = activeBtn.getBoundingClientRect();
+
+      setPillStyle({
+        left: btnRect.left - containerRect.left,
+        width: btnRect.width,
         opacity: 1,
       });
+    } else {
+      setPillStyle((prev) => ({ ...prev, opacity: 0 }));
     }
-  }, [hoveredId, activeSection]);
+  }, [targetSection]);
 
-  const scrollToSection = (id: string) => {
+  const handleNavClick = (href: string) => {
+    setActiveSection(href);
     setMobileMenuOpen(false);
-    const element = document.getElementById(id);
-    if (element) {
-      const yOffset = -80;
-      const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
-      window.scrollTo({ top: y, behavior: 'smooth' });
+    const targetId = href.substring(1);
+    const targetEl = document.getElementById(targetId);
+    if (targetEl) {
+      targetEl.scrollIntoView({ behavior: 'smooth' });
     }
   };
 
   return (
-    <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-        isScrolled
-          ? 'py-3 bg-black/40 backdrop-blur-2xl border-b border-white/[0.08] shadow-[0_8px_32px_rgba(0,0,0,0.6)]'
-          : 'py-5 bg-transparent'
-      }`}
-    >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
-        
-        {/* Brand Logo */}
-        <button
-          onClick={() => scrollToSection('home')}
-          className="group flex items-center text-left focus:outline-none transition-transform duration-300 hover:scale-105"
-          aria-label="Nytrox Studio Home"
+    <header className="fixed top-0 left-0 right-0 z-50 flex items-center justify-center p-3 sm:p-5 pointer-events-none">
+      <nav
+        className={`pointer-events-auto flex items-center justify-between w-full max-w-6xl px-4 sm:px-6 py-2.5 rounded-full transition-all duration-500 relative ${
+          isScrolled
+            ? 'glass-pill shadow-2xl border border-white/15 bg-surface-100/60 backdrop-blur-2xl'
+            : 'glass-card border border-white/10 bg-surface-100/40 backdrop-blur-xl'
+        }`}
+      >
+        {/* Brand Logo (Double click triggers admin) */}
+        <div
+          className="flex items-center gap-2 cursor-pointer select-none"
+          onClick={() => handleNavClick('#home')}
+          onDoubleClick={onOpenAdmin}
+          title={onOpenAdmin ? 'Double-click for Owner Portal' : undefined}
         >
-          <NytroxLogo size="nav" className="text-white" />
-        </button>
+          <NytroxLogo size="nav" />
+        </div>
 
-        {/* --- iOS 26 Liquid Sliding Glass Navigation Bar --- */}
-        <nav
+        {/* Desktop Nav Items with Single Liquid Sliding iOS 26 Glass Pill */}
+        <div
           ref={navContainerRef}
-          onMouseLeave={() => setHoveredId(null)}
-          className="relative hidden md:flex items-center gap-1 p-1.5 rounded-full bg-surface-100/50 border border-white/[0.12] backdrop-blur-2xl shadow-[inset_0_1px_1px_rgba(255,255,255,0.25),0_8px_24px_rgba(0,0,0,0.4)]"
+          onMouseLeave={() => setHoveredSection(null)}
+          className="hidden md:flex items-center gap-1 relative px-1 py-1 rounded-full bg-white/[0.03] border border-white/5"
         >
-          {/* Smooth Sliding Glass Pill Indicator */}
+          {/* Fluid Sliding Glass Capsule Pill */}
           <div
-            className="absolute top-1.5 bottom-1.5 rounded-full bg-white/[0.14] border border-white/[0.24] backdrop-blur-2xl shadow-[inset_0_1px_1px_rgba(255,255,255,0.45),0_4px_16px_rgba(0,0,0,0.3)] pointer-events-none transition-all duration-300 ease-[cubic-bezier(0.25,1,0.5,1)]"
+            className="absolute top-1 bottom-1 rounded-full transition-all duration-300 ease-[cubic-bezier(0.25,1,0.5,1)] pointer-events-none z-0"
             style={{
-              transform: `translateX(${indicatorStyle.left}px)`,
-              width: `${indicatorStyle.width}px`,
-              opacity: indicatorStyle.opacity,
+              left: `${pillStyle.left}px`,
+              width: `${pillStyle.width}px`,
+              opacity: pillStyle.opacity,
+              background: 'rgba(255, 255, 255, 0.12)',
+              backdropFilter: 'blur(24px)',
+              WebkitBackdropFilter: 'blur(24px)',
+              border: '1px solid rgba(255, 255, 255, 0.28)',
+              boxShadow: 'inset 0 1px 1px 0 rgba(255, 255, 255, 0.35), 0 4px 16px 0 rgba(0, 0, 0, 0.4)',
             }}
           />
 
-          {NAV_LINKS.map((link) => {
-            const isActive = activeSection === link.id;
+          {NAV_ITEMS.map((item) => {
+            const isActive = activeSection === item.href;
+            const isHovered = hoveredSection === item.href;
 
             return (
               <button
-                key={link.id}
-                ref={(el) => { navButtonRefs.current[link.id] = el; }}
-                onClick={() => scrollToSection(link.id)}
-                onMouseEnter={() => setHoveredId(link.id)}
-                className={`relative z-10 px-4 py-1.5 text-xs font-semibold tracking-wider uppercase rounded-full transition-colors duration-200 select-none ${
-                  isActive
-                    ? 'text-white'
-                    : 'text-zinc-400 hover:text-white'
+                key={item.href}
+                data-nav={item.href}
+                onClick={() => handleNavClick(item.href)}
+                onMouseEnter={() => setHoveredSection(item.href)}
+                className={`relative z-10 px-4 py-1.5 rounded-full text-xs font-semibold uppercase tracking-wider transition-colors duration-200 select-none ${
+                  isActive || isHovered ? 'text-white' : 'text-zinc-400 hover:text-zinc-200'
                 }`}
               >
-                {link.label}
+                {item.label}
               </button>
             );
           })}
-        </nav>
-
-        {/* CTA Action Button */}
-        <div className="hidden md:flex items-center gap-3">
-          <button
-            onClick={onOpenContact}
-            className="group relative inline-flex items-center gap-2 px-5 py-2 text-xs font-semibold tracking-wider uppercase text-black bg-white hover:bg-zinc-200 rounded-full transition-all duration-300 hover:shadow-glow-md active:scale-95"
-          >
-            <Sparkles className="w-3.5 h-3.5 text-zinc-900" />
-            <span>Start Project</span>
-            <ArrowUpRight className="w-3.5 h-3.5 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-          </button>
         </div>
 
-        {/* Mobile Menu Button */}
-        <button
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className="md:hidden p-2 rounded-xl bg-surface-100/80 border border-white/15 text-zinc-300 hover:text-white transition-colors backdrop-blur-xl"
-          aria-label="Toggle navigation menu"
-        >
-          {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-        </button>
-      </div>
+        {/* Action Button */}
+        <div className="flex items-center gap-2">
+          <button
+            onClick={onOpenContact}
+            className="hidden sm:inline-flex items-center gap-2 px-5 py-2 rounded-full bg-white text-black font-semibold text-xs uppercase tracking-wider hover:bg-zinc-200 transition-all duration-300 shadow-glow-sm"
+          >
+            <span>Commission Work</span>
+            <ArrowUpRight className="w-3.5 h-3.5" />
+          </button>
 
-      {/* Mobile Drawer */}
+          {/* Mobile Menu Hamburger */}
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="md:hidden p-2 rounded-full glass-card border border-white/10 text-zinc-300 hover:text-white"
+            aria-label="Toggle mobile navigation menu"
+          >
+            <div className="w-5 h-4 flex flex-col justify-between">
+              <span className={`w-full h-0.5 bg-current transition-all ${mobileMenuOpen ? 'rotate-45 translate-y-1.5' : ''}`} />
+              <span className={`w-full h-0.5 bg-current transition-all ${mobileMenuOpen ? 'opacity-0' : ''}`} />
+              <span className={`w-full h-0.5 bg-current transition-all ${mobileMenuOpen ? '-rotate-45 -translate-y-1.5' : ''}`} />
+            </div>
+          </button>
+        </div>
+      </nav>
+
+      {/* Mobile Drawer Menu */}
       {mobileMenuOpen && (
-        <div className="md:hidden bg-black/90 backdrop-blur-2xl border-b border-white/10 px-4 pt-3 pb-6 space-y-2 animate-fade-in shadow-2xl">
-          {NAV_LINKS.map((link) => {
-            const isActive = activeSection === link.id;
-            return (
+        <div className="md:hidden fixed inset-x-4 top-20 z-50 glass-card p-6 rounded-3xl border border-white/15 shadow-2xl animate-fade-in bg-zinc-950/95 backdrop-blur-2xl">
+          <div className="flex flex-col space-y-3">
+            {NAV_ITEMS.map((item) => (
               <button
-                key={link.id}
-                onClick={() => scrollToSection(link.id)}
-                className={`w-full text-left px-4 py-3 text-sm font-medium tracking-wide rounded-xl transition-all flex items-center justify-between ${
-                  isActive
-                    ? 'bg-white/15 text-white font-semibold border border-white/20 shadow-sm'
-                    : 'text-zinc-400 hover:bg-white/5 hover:text-white'
-                }`}
+                key={item.href}
+                onClick={() => handleNavClick(item.href)}
+                className="text-left px-4 py-3 rounded-xl text-sm font-semibold uppercase tracking-wider text-zinc-300 hover:text-white hover:bg-white/5"
               >
-                <span>{link.label}</span>
-                {isActive && <div className="w-1.5 h-1.5 rounded-full bg-white shadow-glow-sm" />}
+                {item.label}
               </button>
-            );
-          })}
-          <div className="pt-3 border-t border-white/10">
+            ))}
+
             <button
               onClick={() => {
                 setMobileMenuOpen(false);
                 onOpenContact();
               }}
-              className="w-full py-3 px-4 bg-white text-black font-semibold text-sm rounded-xl flex items-center justify-center gap-2 hover:bg-zinc-200 transition-all shadow-glow-sm"
+              className="w-full mt-2 py-3 rounded-xl bg-white text-black font-bold text-xs uppercase tracking-wider hover:bg-zinc-200 transition-all flex items-center justify-center gap-2 shadow-glow-sm"
             >
-              <Sparkles className="w-4 h-4" />
-              <span>Start a Project</span>
+              <span>Commission Work</span>
               <ArrowUpRight className="w-4 h-4" />
             </button>
+
+            {onOpenAdmin && (
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  onOpenAdmin();
+                }}
+                className="w-full mt-2 py-2 text-center text-xs text-zinc-500 hover:text-zinc-300 transition-colors"
+              >
+                🔒 Owner Admin Login
+              </button>
+            )}
           </div>
         </div>
       )}
