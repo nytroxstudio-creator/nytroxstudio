@@ -27,19 +27,14 @@ export const Hero: React.FC<HeroProps> = ({ onOpenContact, onSelectProject }) =>
         {/* Main Hero Card Container */}
         <div className="relative z-10 max-w-4xl mx-auto text-center flex flex-col items-center animate-fade-in-up">
           
-          {/* Official Nytrox Studio Brand Logo with Tight Concentrated Glow */}
-          <div className="mb-8 w-full flex justify-center pt-2">
+          {/* Official Nytrox Studio Brand Logo with Glow Strictly on Hover inside Text Area */}
+          <div className="mb-6 w-full flex justify-center pt-2">
             <NytroxLogo size="hero" />
           </div>
 
-          {/* Highlight Subtitle */}
-          <p className="text-lg sm:text-2xl font-medium text-zinc-200 max-w-2xl mx-auto leading-relaxed mb-4">
+          {/* Clean, Lightweight & Concise Subtitle (Heavy paragraph removed) */}
+          <p className="text-base sm:text-xl font-normal text-zinc-300 max-w-xl mx-auto leading-relaxed mb-10 text-balance">
             {STUDIO_INFO.tagline}
-          </p>
-
-          {/* Body Narrative */}
-          <p className="text-sm sm:text-base text-zinc-400 max-w-2xl mx-auto leading-relaxed mb-10 text-balance">
-            {STUDIO_INFO.description}
           </p>
 
           {/* Action Button Row */}
@@ -94,7 +89,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenContact, onSelectProject }) =>
               onClick={() => scrollTo('portfolio')}
               className="text-xs font-medium text-zinc-400 hover:text-white transition-colors"
             >
-              View all 10 works →
+              View all works →
             </button>
           </div>
 

@@ -104,7 +104,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenAdmin }) => {
               <button
                 onClick={onOpenAdmin}
                 className="text-zinc-600 hover:text-zinc-300 transition-colors p-1"
-                title="Owner Portal (Ctrl + Shift + A)"
+                
                 aria-label="Admin Login"
               >
                 <Lock className="w-3 h-3" />

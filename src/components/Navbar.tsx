@@ -99,7 +99,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenContact, onOpenAdmin }) =>
           className="flex items-center gap-2 cursor-pointer select-none"
           onClick={() => handleNavClick('#home')}
           onDoubleClick={onOpenAdmin}
-          title={onOpenAdmin ? 'Double-click for Owner Portal' : undefined}
+          
         >
           <NytroxLogo size="nav" />
         </div>
