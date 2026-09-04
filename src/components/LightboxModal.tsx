@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { X, ChevronLeft, ChevronRight, Sparkles, ArrowRight, CheckCircle2 } from 'lucide-react';
-import { PORTFOLIO_DATA, ProjectItem } from '../data/studioData';
+import { useContentStore } from '../services/contentStore';
+import { PortfolioItem } from '../types';
 
 interface LightboxModalProps {
   selectedId: string | null;
@@ -15,6 +16,8 @@ export const LightboxModal: React.FC<LightboxModalProps> = ({
   onSelectProject,
   onOpenContact
 }) => {
+  const store = useContentStore();
+
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (!selectedId) return;
@@ -29,17 +32,19 @@ export const LightboxModal: React.FC<LightboxModalProps> = ({
 
   if (!selectedId) return null;
 
-  const currentIndex = PORTFOLIO_DATA.findIndex((p) => p.id === selectedId);
-  const currentProject: ProjectItem = PORTFOLIO_DATA[currentIndex] || PORTFOLIO_DATA[0];
+  const currentIndex = store.portfolio.findIndex((p) => p.id === selectedId);
+  const currentProject: PortfolioItem = store.portfolio[currentIndex] || store.portfolio[0];
+
+  if (!currentProject) return null;
 
   const navigatePrev = () => {
-    const prevIdx = (currentIndex - 1 + PORTFOLIO_DATA.length) % PORTFOLIO_DATA.length;
-    onSelectProject(PORTFOLIO_DATA[prevIdx].id);
+    const prevIdx = (currentIndex - 1 + store.portfolio.length) % store.portfolio.length;
+    onSelectProject(store.portfolio[prevIdx].id);
   };
 
   const navigateNext = () => {
-    const nextIdx = (currentIndex + 1) % PORTFOLIO_DATA.length;
-    onSelectProject(PORTFOLIO_DATA[nextIdx].id);
+    const nextIdx = (currentIndex + 1) % store.portfolio.length;
+    onSelectProject(store.portfolio[nextIdx].id);
   };
 
   const isVideo = currentProject.mediaType === 'video' && currentProject.videoSrc;
@@ -49,123 +54,106 @@ export const LightboxModal: React.FC<LightboxModalProps> = ({
       className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 md:p-8 bg-black/95 backdrop-blur-2xl animate-fade-in"
       onClick={onClose}
     >
-      {/* Modal Container */}
       <div
-        className="relative max-w-5xl w-full glass-card rounded-3xl border border-white/20 shadow-2xl overflow-hidden max-h-[92vh] flex flex-col"
+        className="relative max-w-5xl w-full glass-card rounded-3xl border border-white/15 overflow-hidden shadow-2xl flex flex-col md:flex-row bg-zinc-950/90"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Top Control Bar */}
-        <div className="flex items-center justify-between p-4 sm:p-5 border-b border-white/10 bg-surface-100/50 backdrop-blur-md">
-          <div className="flex items-center gap-3">
-            <span className="px-3 py-1 rounded-full bg-white/10 border border-white/15 text-xs font-bold uppercase tracking-wider text-white">
-              {currentProject.category}
-            </span>
-            <span className="text-xs text-zinc-400 hidden sm:inline">
-              Project {currentIndex + 1} of {PORTFOLIO_DATA.length}
-            </span>
-          </div>
+        {/* Close Button */}
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 z-20 p-2 rounded-full glass-card border border-white/20 text-zinc-300 hover:text-white hover:border-white/40 transition-all cursor-pointer"
+          aria-label="Close modal"
+        >
+          <X className="w-5 h-5" />
+        </button>
 
-          <div className="flex items-center gap-2">
-            <button
-              onClick={navigatePrev}
-              className="p-2 rounded-full border border-white/10 text-zinc-300 hover:text-white hover:bg-white/10 transition-colors"
-              aria-label="Previous project"
-            >
-              <ChevronLeft className="w-4 h-4" />
-            </button>
-            <button
-              onClick={navigateNext}
-              className="p-2 rounded-full border border-white/10 text-zinc-300 hover:text-white hover:bg-white/10 transition-colors"
-              aria-label="Next project"
-            >
-              <ChevronRight className="w-4 h-4" />
-            </button>
-            <button
-              onClick={onClose}
-              className="p-2 rounded-full border border-white/20 text-zinc-300 hover:text-white hover:bg-white/20 transition-all ml-2"
-              aria-label="Close modal"
-            >
-              <X className="w-5 h-5" />
-            </button>
-          </div>
+        {/* Media Preview Column */}
+        <div className="relative md:w-3/5 bg-zinc-950 flex items-center justify-center min-h-[300px] sm:min-h-[420px] p-4">
+          {isVideo ? (
+            <video
+              src={currentProject.videoSrc}
+              controls
+              autoPlay
+              loop
+              playsInline
+              className="max-h-[70vh] w-full object-contain rounded-xl"
+            />
+          ) : (
+            <img
+              src={currentProject.image}
+              alt={currentProject.alt}
+              className="max-h-[70vh] w-full object-contain rounded-xl"
+            />
+          )}
+
+          {/* Navigation Arrows */}
+          <button
+            onClick={navigatePrev}
+            className="absolute left-4 top-1/2 -translate-y-1/2 p-2 rounded-full glass-card border border-white/20 text-white hover:bg-white/10 transition-all cursor-pointer"
+            aria-label="Previous project"
+          >
+            <ChevronLeft className="w-5 h-5" />
+          </button>
+
+          <button
+            onClick={navigateNext}
+            className="absolute right-4 top-1/2 -translate-y-1/2 p-2 rounded-full glass-card border border-white/20 text-white hover:bg-white/10 transition-all cursor-pointer"
+            aria-label="Next project"
+          >
+            <ChevronRight className="w-5 h-5" />
+          </button>
         </div>
 
-        {/* Modal Scrollable Body */}
-        <div className="overflow-y-auto p-4 sm:p-8 space-y-6">
-          {/* Main Visual Display (HD Video or Full-Res Image) */}
-          <div className="relative w-full rounded-2xl overflow-hidden bg-zinc-950 border border-white/10 flex items-center justify-center">
-            {isVideo ? (
-              <video
-                src={currentProject.videoSrc}
-                controls
-                autoPlay
-                loop
-                playsInline
-                className="w-full max-h-[58vh] object-contain bg-black"
-              />
-            ) : (
-              <img
-                src={currentProject.image}
-                alt={currentProject.alt}
-                className="w-full max-h-[58vh] object-contain"
-              />
-            )}
-          </div>
+        {/* Information & Metadata Column */}
+        <div className="md:w-2/5 p-6 sm:p-8 flex flex-col justify-between border-t md:border-t-0 md:border-l border-white/10 space-y-6">
+          <div className="space-y-4">
+            <div className="flex items-center gap-2">
+              <span className="px-3 py-1 rounded-full bg-white/10 border border-white/10 text-[10px] font-bold uppercase tracking-wider text-zinc-300">
+                {currentProject.category}
+              </span>
+              <span className="text-[11px] text-zinc-500 font-mono">
+                {currentIndex + 1} / {store.portfolio.length}
+              </span>
+            </div>
 
-          {/* Project Details & Commission Row */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-2">
-            <div className="md:col-span-2 space-y-3">
-              <h2 className="text-2xl sm:text-3xl font-bold font-display text-white leading-tight">
-                {currentProject.title}
-              </h2>
-              <p className="text-sm text-zinc-300 leading-relaxed">
-                {currentProject.description}
-              </p>
-              
-              <div className="pt-2">
-                <h4 className="text-xs uppercase font-bold tracking-wider text-zinc-400 mb-2">
-                  Project Deliverables Included:
-                </h4>
-                <div className="flex flex-wrap gap-2">
-                  {currentProject.deliverables.map((del, idx) => (
-                    <span
-                      key={idx}
-                      className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 border border-white/15 text-xs text-zinc-200"
-                    >
-                      <CheckCircle2 className="w-3 h-3 text-white" />
-                      <span>{del}</span>
-                    </span>
+            <h3 className="text-xl sm:text-2xl font-bold font-display text-white leading-tight">
+              {currentProject.title}
+            </h3>
+
+            <p className="text-xs sm:text-sm text-zinc-400 leading-relaxed">
+              {currentProject.description}
+            </p>
+
+            {/* Deliverables List */}
+            {currentProject.deliverables && currentProject.deliverables.length > 0 && (
+              <div className="space-y-2 pt-2 border-t border-white/10">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-zinc-300 block">
+                  Included Assets:
+                </span>
+                <div className="space-y-1.5">
+                  {currentProject.deliverables.map((item, idx) => (
+                    <div key={idx} className="flex items-center gap-2 text-xs text-zinc-400">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-zinc-300 shrink-0" />
+                      <span>{item}</span>
+                    </div>
                   ))}
                 </div>
               </div>
-            </div>
+            )}
+          </div>
 
-            {/* Commission CTA Card */}
-            <div className="glass-card p-5 rounded-2xl border border-white/15 flex flex-col justify-between space-y-4 bg-surface-200/60">
-              <div>
-                <span className="text-[10px] uppercase font-bold tracking-wider text-zinc-400 block mb-1">
-                  Want similar results?
-                </span>
-                <h4 className="text-sm font-bold text-white leading-snug">
-                  Get a tailored quote for your project
-                </h4>
-                <p className="text-xs text-zinc-400 mt-1">
-                  Average delivery time: 48 hours with full source files and revisions included.
-                </p>
-              </div>
-
-              <button
-                onClick={() => {
-                  onClose();
-                  onOpenContact();
-                }}
-                className="w-full py-3 px-4 bg-white text-black font-semibold text-xs uppercase tracking-wider rounded-xl hover:bg-zinc-200 transition-all flex items-center justify-center gap-2 shadow-glow-sm"
-              >
-                <Sparkles className="w-3.5 h-3.5 text-zinc-900" />
-                <span>Start This Project</span>
-                <ArrowRight className="w-3.5 h-3.5" />
-              </button>
-            </div>
+          {/* Modal Action CTA */}
+          <div className="pt-4 border-t border-white/10 space-y-3">
+            <button
+              onClick={() => {
+                onClose();
+                onOpenContact();
+              }}
+              className="w-full py-3.5 px-6 rounded-full bg-white text-black font-semibold text-xs uppercase tracking-wider hover:bg-zinc-200 transition-all flex items-center justify-center gap-2 shadow-glow-sm cursor-pointer"
+            >
+              <span>Inquire About Similar Work</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </button>
           </div>
         </div>
 

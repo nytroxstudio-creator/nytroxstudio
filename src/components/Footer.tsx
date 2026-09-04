@@ -1,128 +1,119 @@
 import React from 'react';
-import { ArrowUp, Send, Instagram, Twitter, Linkedin, Lock } from 'lucide-react';
-import { STUDIO_INFO } from '../data/studioData';
 import { NytroxLogo } from './NytroxLogo';
+import { ArrowUp, Lock } from 'lucide-react';
+import { useContentStore } from '../services/contentStore';
 
 interface FooterProps {
-  onOpenAdmin?: () => void;
+  onOpenAdmin: () => void;
 }
 
 export const Footer: React.FC<FooterProps> = ({ onOpenAdmin }) => {
+  const store = useContentStore();
+
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   return (
-    <footer className="relative border-t border-white/10 pt-20 pb-12 overflow-hidden">
-      {/* Subtle Glow behind Footer */}
-      <div className="pointer-events-none absolute bottom-0 left-1/2 -translate-x-1/2 w-[800px] h-[300px] rounded-full bg-white/[0.02] blur-[150px] -z-10" />
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
-        {/* Main Footer Row */}
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-12 pb-16 border-b border-white/10">
+    <footer className="relative border-t border-white/10 bg-surface-100/40 backdrop-blur-md pt-16 pb-12 overflow-hidden">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-10 pb-12 border-b border-white/10">
           
-          {/* Brand Col */}
+          {/* Brand Info */}
           <div className="md:col-span-5 space-y-4">
-            <div className="flex items-center gap-3">
+            <div className="cursor-pointer inline-block" onClick={scrollToTop}>
               <NytroxLogo size="footer" />
             </div>
-            <p className="text-sm text-zinc-400 max-w-sm leading-relaxed">
-              {STUDIO_INFO.description}
+            <p className="text-xs sm:text-sm text-zinc-400 max-w-sm leading-relaxed">
+              {store.studioInfo.description}
             </p>
-            
-            {/* Social Links */}
-            <div className="flex items-center gap-3 pt-2">
-              <a
-                href={STUDIO_INFO.socials.instagram}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="p-2.5 rounded-full glass-card border border-white/10 text-zinc-400 hover:text-white hover:border-white/30 hover:scale-110 transition-all"
-                aria-label="Instagram"
-              >
-                <Instagram className="w-4 h-4" />
-              </a>
-              <a
-                href={STUDIO_INFO.socials.twitter}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="p-2.5 rounded-full glass-card border border-white/10 text-zinc-400 hover:text-white hover:border-white/30 hover:scale-110 transition-all"
-                aria-label="Twitter / X"
-              >
-                <Twitter className="w-4 h-4" />
-              </a>
-              <a
-                href={STUDIO_INFO.socials.linkedin}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="p-2.5 rounded-full glass-card border border-white/10 text-zinc-400 hover:text-white hover:border-white/30 hover:scale-110 transition-all"
-                aria-label="LinkedIn"
-              >
-                <Linkedin className="w-4 h-4" />
-              </a>
+            <div className="pt-1">
+              <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-xs text-zinc-300">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                <span>{store.studioInfo.availability}</span>
+              </span>
             </div>
           </div>
 
-          {/* Quick Links */}
+          {/* Navigation */}
           <div className="md:col-span-3 space-y-3">
-            <h4 className="text-xs uppercase font-bold tracking-widest text-zinc-300">
-              Navigation
+            <h4 className="text-xs font-semibold uppercase tracking-wider text-zinc-300">
+              Quick Links
             </h4>
-            <ul className="space-y-2 text-sm text-zinc-400">
-              <li><a href="#about" className="hover:text-white transition-colors">Studio Ethos</a></li>
-              <li><a href="#capabilities" className="hover:text-white transition-colors">Core Capabilities</a></li>
-              <li><a href="#portfolio" className="hover:text-white transition-colors">Selected Works</a></li>
-              <li><a href="#reviews" className="hover:text-white transition-colors">Client Verified Reviews</a></li>
+            <ul className="space-y-2 text-xs text-zinc-400">
+              <li><a href="#home" className="hover:text-white transition-colors">Home</a></li>
+              <li><a href="#about" className="hover:text-white transition-colors">About & Ethos</a></li>
+              <li><a href="#capabilities" className="hover:text-white transition-colors">Capabilities</a></li>
+              <li><a href="#portfolio" className="hover:text-white transition-colors">Portfolio Archive</a></li>
+              {store.siteSettings.showBlogSection && (
+                <li><a href="#blog" className="hover:text-white transition-colors">Journal & Insights</a></li>
+              )}
+              {store.siteSettings.showReviewsSection && (
+                <li><a href="#reviews" className="hover:text-white transition-colors">Reviews</a></li>
+              )}
             </ul>
           </div>
 
-          {/* Contact Direct */}
-          <div className="md:col-span-4 space-y-4">
-            <h4 className="text-xs uppercase font-bold tracking-widest text-zinc-300">
+          {/* Connect & Socials */}
+          <div className="md:col-span-4 space-y-3">
+            <h4 className="text-xs font-semibold uppercase tracking-wider text-zinc-300">
               Direct Contact
             </h4>
-            <p className="text-sm text-zinc-400">
-              Ready to elevate your digital presence? Send an email or commission a bespoke brand kit.
+            <p className="text-xs text-zinc-400">
+              Inquiries: <a href={`mailto:${store.studioInfo.email}`} className="text-white hover:underline">{store.studioInfo.email}</a>
             </p>
-            <a
-              href={`mailto:${STUDIO_INFO.email}`}
-              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-white text-black text-xs font-semibold uppercase tracking-wider hover:bg-zinc-200 transition-all shadow-glow-sm"
-            >
-              <Send className="w-3.5 h-3.5" />
-              <span>{STUDIO_INFO.email}</span>
-            </a>
+            <div className="flex items-center gap-3 pt-2">
+              <a
+                href={store.studioInfo.socials.instagram}
+                target="_blank"
+                rel="noreferrer"
+                className="px-3 py-1.5 rounded-lg glass-card border border-white/10 text-xs text-zinc-300 hover:text-white hover:border-white/30 transition-all"
+              >
+                Instagram
+              </a>
+              <a
+                href={store.studioInfo.socials.twitter}
+                target="_blank"
+                rel="noreferrer"
+                className="px-3 py-1.5 rounded-lg glass-card border border-white/10 text-xs text-zinc-300 hover:text-white hover:border-white/30 transition-all"
+              >
+                Twitter / X
+              </a>
+              <a
+                href={store.studioInfo.socials.linkedin}
+                target="_blank"
+                rel="noreferrer"
+                className="px-3 py-1.5 rounded-lg glass-card border border-white/10 text-xs text-zinc-300 hover:text-white hover:border-white/30 transition-all"
+              >
+                LinkedIn
+              </a>
+            </div>
           </div>
 
         </div>
 
-        {/* Bottom Sub-bar */}
+        {/* Bottom Bar with subtle admin trigger */}
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-zinc-500">
-          <div className="flex items-center gap-3">
-            <p>© {new Date().getFullYear()} Nytrox Studio. All rights reserved.</p>
-            {/* Discreet Admin Lock Button in footer */}
-            {onOpenAdmin && (
-              <button
-                onClick={onOpenAdmin}
-                className="text-zinc-600 hover:text-zinc-300 transition-colors p-1"
-                
-                aria-label="Admin Login"
-              >
-                <Lock className="w-3 h-3" />
-              </button>
-            )}
-          </div>
-
-          <div className="flex items-center gap-6">
+          <div className="flex items-center gap-2">
+            <span>© {new Date().getFullYear()} Nytrox Studio. All rights reserved.</span>
+            <span>•</span>
             <button
-              onClick={scrollToTop}
-              className="inline-flex items-center gap-1.5 hover:text-white transition-colors"
+              onClick={onOpenAdmin}
+              className="text-zinc-600 hover:text-zinc-400 transition-colors p-1 rounded cursor-pointer inline-flex items-center gap-1"
             >
-              <span>Back to top</span>
-              <ArrowUp className="w-3.5 h-3.5" />
+              <Lock className="w-3 h-3" />
+              <span className="text-[10px]">Owner Portal</span>
             </button>
           </div>
-        </div>
 
+          <button
+            onClick={scrollToTop}
+            className="flex items-center gap-1.5 hover:text-zinc-300 transition-colors cursor-pointer"
+          >
+            <span>Back to top</span>
+            <ArrowUp className="w-3.5 h-3.5" />
+          </button>
+        </div>
       </div>
     </footer>
   );

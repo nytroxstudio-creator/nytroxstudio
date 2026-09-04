@@ -5,15 +5,17 @@ import { Hero } from './components/Hero';
 import { About } from './components/About';
 import { Portfolio } from './components/Portfolio';
 import { LightboxModal } from './components/LightboxModal';
+import { Blog } from './components/Blog';
 import { Reviews } from './components/Reviews';
 import { ContactModal } from './components/ContactModal';
 import { AdminDashboard } from './components/AdminDashboard';
 import { Footer } from './components/Footer';
 import { analytics } from './services/analytics';
-import { PORTFOLIO_DATA } from './data/studioData';
+import { useContentStore } from './services/contentStore';
 import { Lock } from 'lucide-react';
 
 export const App: React.FC = () => {
+  const store = useContentStore();
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
   const [contactModalOpen, setContactModalOpen] = useState<boolean>(false);
   const [adminModalOpen, setAdminModalOpen] = useState<boolean>(false);
@@ -22,7 +24,6 @@ export const App: React.FC = () => {
   useEffect(() => {
     analytics.initSession();
 
-    // Check if URL has #admin or /admin
     if (window.location.hash === '#admin' || window.location.pathname.endsWith('/admin')) {
       setAdminModalOpen(true);
     }
@@ -40,32 +41,23 @@ export const App: React.FC = () => {
       const isM = e.key === 'M' || e.key === 'm';
       const isX = e.key === 'X' || e.key === 'x';
 
-      // 1. Ctrl + Shift + A / Cmd + Shift + A
       if ((e.ctrlKey || e.metaKey) && e.shiftKey && isA) {
         e.preventDefault();
         e.stopPropagation();
         setAdminModalOpen((prev) => !prev);
-      }
-      // 2. Alt + A
-      else if (e.altKey && isA) {
+      } else if (e.altKey && isA) {
         e.preventDefault();
         e.stopPropagation();
         setAdminModalOpen((prev) => !prev);
-      }
-      // 3. Ctrl + Alt + A
-      else if ((e.ctrlKey || e.metaKey) && e.altKey && isA) {
+      } else if ((e.ctrlKey || e.metaKey) && e.altKey && isA) {
         e.preventDefault();
         e.stopPropagation();
         setAdminModalOpen((prev) => !prev);
-      }
-      // 4. Ctrl + M
-      else if ((e.ctrlKey || e.metaKey) && isM) {
+      } else if ((e.ctrlKey || e.metaKey) && isM) {
         e.preventDefault();
         e.stopPropagation();
         setAdminModalOpen((prev) => !prev);
-      }
-      // 5. Ctrl + Shift + X
-      else if ((e.ctrlKey || e.metaKey) && e.shiftKey && isX) {
+      } else if ((e.ctrlKey || e.metaKey) && e.shiftKey && isX) {
         e.preventDefault();
         e.stopPropagation();
         setAdminModalOpen((prev) => !prev);
@@ -84,7 +76,7 @@ export const App: React.FC = () => {
 
   const handleSelectProject = (id: string) => {
     setSelectedProjectId(id);
-    const item = PORTFOLIO_DATA.find((p) => p.id === id);
+    const item = store.portfolio.find((p) => p.id === id);
     if (item) {
       analytics.logProjectClick(item.id, item.title, item.category);
     }
@@ -102,9 +94,9 @@ export const App: React.FC = () => {
   return (
     <div className="relative min-h-screen bg-[#050507] text-platinum selection:bg-zinc-800 selection:text-white overflow-x-hidden">
       {/* 60fps Starry Parallax Canvas */}
-      <HeroCanvas />
+      {store.siteSettings.enableStarfield && <HeroCanvas />}
 
-      {/* Floating iOS 26 Glass Navigation Header (Double-click logo opens admin) */}
+      {/* Floating iOS 26 Glass Navigation Header */}
       <Navbar
         onOpenContact={handleOpenContact}
         onOpenAdmin={() => setAdminModalOpen(true)}
@@ -121,7 +113,16 @@ export const App: React.FC = () => {
           onSelectProject={handleSelectProject}
           onOpenContact={handleOpenContact}
         />
-        <Reviews />
+
+        {/* Dynamic Blog Section (Toggleable from Admin Portal) */}
+        {store.siteSettings.showBlogSection && (
+          <Blog onOpenContact={handleOpenContact} />
+        )}
+
+        {/* Dynamic Reviews Section */}
+        {store.siteSettings.showReviewsSection && (
+          <Reviews />
+        )}
       </main>
 
       {/* Footer with subtle admin trigger */}
@@ -144,8 +145,7 @@ export const App: React.FC = () => {
       {/* Discreet Floating Owner Key in Bottom Right */}
       <button
         onClick={() => setAdminModalOpen(true)}
-        className="fixed bottom-4 right-4 z-40 p-2.5 rounded-full glass-card border border-white/10 hover:border-white/30 text-zinc-500 hover:text-white hover:scale-110 transition-all duration-300 shadow-2xl group flex items-center gap-1.5"
-        title="Owner Portal (Alt+A or Click)"
+        className="fixed bottom-4 right-4 z-40 p-2.5 rounded-full glass-card border border-white/10 hover:border-white/30 text-zinc-500 hover:text-white hover:scale-110 transition-all duration-300 shadow-2xl group flex items-center gap-1.5 cursor-pointer"
         aria-label="Open Admin Portal"
       >
         <Lock className="w-3.5 h-3.5" />
@@ -154,7 +154,7 @@ export const App: React.FC = () => {
         </span>
       </button>
 
-      {/* Private Password-Protected Admin & Live Viewers Dashboard */}
+      {/* Private Password-Protected Admin & Content Management Center */}
       <AdminDashboard
         isOpen={adminModalOpen}
         onClose={() => {

@@ -13,7 +13,7 @@ import {
   Flame,
   ShieldAlert
 } from 'lucide-react';
-import { STUDIO_INFO, SERVICES_DATA } from '../data/studioData';
+import { useContentStore } from '../services/contentStore';
 
 const ICON_MAP: Record<string, React.ReactNode> = {
   PenTool: <PenTool className="w-6 h-6" />,
@@ -31,6 +31,8 @@ interface AboutProps {
 }
 
 export const About: React.FC<AboutProps> = ({ onOpenContact }) => {
+  const store = useContentStore();
+
   return (
     <section id="about" className="relative py-24 md:py-32 border-t border-white/10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -47,7 +49,7 @@ export const About: React.FC<AboutProps> = ({ onOpenContact }) => {
           </h2>
 
           <p className="mt-6 text-base sm:text-lg text-zinc-400 leading-relaxed">
-            {STUDIO_INFO.aboutStory}
+            {store.studioInfo.aboutStory}
           </p>
         </div>
 
@@ -59,7 +61,17 @@ export const About: React.FC<AboutProps> = ({ onOpenContact }) => {
             </div>
             <h3 className="text-xl font-bold font-display text-white mb-3">No Generic Templates</h3>
             <p className="text-sm text-zinc-400 leading-relaxed">
-              Every curve, character silhouette, and typography glyph is built from blank canvas tailored strictly to your creator persona.
+              Every asset is architected from absolute zero. We never recycle assets or compromise brand integrity with off-the-shelf presets.
+            </p>
+          </div>
+
+          <div className="glass-card p-8 rounded-2xl border border-white/10 relative overflow-hidden group">
+            <div className="w-12 h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-white mb-6 group-hover:border-white/30 group-hover:scale-105 transition-all">
+              <Sparkles className="w-6 h-6 text-zinc-200" />
+            </div>
+            <h3 className="text-xl font-bold font-display text-white mb-3">Engineered for CTR & Retention</h3>
+            <p className="text-sm text-zinc-400 leading-relaxed">
+              Eye candy is pointless if it does not convert. We blend visual aesthetics with psychological triggers that compel clicks and loyalty.
             </p>
           </div>
 
@@ -67,49 +79,33 @@ export const About: React.FC<AboutProps> = ({ onOpenContact }) => {
             <div className="w-12 h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-white mb-6 group-hover:border-white/30 group-hover:scale-105 transition-all">
               <ShieldAlert className="w-6 h-6 text-zinc-200" />
             </div>
-            <h3 className="text-xl font-bold font-display text-white mb-3">Dark Cinematic Edge</h3>
+            <h3 className="text-xl font-bold font-display text-white mb-3">Zero Compromise Delivery</h3>
             <p className="text-sm text-zinc-400 leading-relaxed">
-              We specialize in deep black, atmospheric monochrome, and moody cyberpunk/anime aesthetics that stand out against bland minimalism.
-            </p>
-          </div>
-
-          <div className="glass-card p-8 rounded-2xl border border-white/10 relative overflow-hidden group">
-            <div className="w-12 h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-white mb-6 group-hover:border-white/30 group-hover:scale-105 transition-all">
-              <CheckCircle2 className="w-6 h-6 text-zinc-200" />
-            </div>
-            <h3 className="text-xl font-bold font-display text-white mb-3">Production Ready</h3>
-            <p className="text-sm text-zinc-400 leading-relaxed">
-              From vector-perfect master SVGs and Live2D model layers to 4K YouTube packaging, assets are delivered ready to deploy immediately.
+              From commercial 4K exports to fully partitioned PSD/Live2D layers, our deliverables are production-ready on day one.
             </p>
           </div>
         </div>
 
-        {/* Capabilities Section */}
+        {/* Dynamic Studio Capabilities Grid */}
         <div id="capabilities" className="pt-8">
-          <div className="flex flex-col md:flex-row md:items-end justify-between mb-12">
-            <div>
-              <span className="text-xs uppercase font-bold tracking-widest text-zinc-400 block mb-2">
-                What We Do
-              </span>
-              <h3 className="text-2xl sm:text-4xl font-extrabold font-display text-white">
-                Studio Capabilities & Deliverables
-              </h3>
-            </div>
-            <p className="text-sm text-zinc-400 max-w-md mt-4 md:mt-0">
-              Complete creative solutions spanning identity, characters, digital packaging, and custom web builds.
+          <div className="max-w-2xl mb-12">
+            <h3 className="text-2xl sm:text-3xl font-extrabold font-display text-white tracking-tight">
+              Comprehensive Studio Capabilities
+            </h3>
+            <p className="mt-2 text-sm text-zinc-400">
+              End-to-end creative production executed with obsessive detail.
             </p>
           </div>
 
-          {/* 8 Services Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-            {SERVICES_DATA.map((service) => (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {store.services.map((service) => (
               <div
                 key={service.id}
-                className="glass-card p-6 rounded-2xl border border-white/10 hover:border-white/25 transition-all duration-300 hover:-translate-y-1 flex flex-col justify-between group"
+                className="glass-card p-6 rounded-2xl border border-white/10 flex flex-col justify-between hover:border-white/30 transition-all duration-300 group hover:shadow-glow-sm"
               >
                 <div>
-                  <div className="w-12 h-12 rounded-xl bg-surface-50 border border-white/10 flex items-center justify-center text-zinc-200 mb-5 group-hover:text-white group-hover:border-white/30 group-hover:bg-white/10 transition-all shadow-glow-sm">
-                    {ICON_MAP[service.iconName] || <Sparkles className="w-6 h-6" />}
+                  <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-white mb-5 group-hover:scale-105 group-hover:border-white/30 transition-all">
+                    {ICON_MAP[service.iconName] || <Sparkles className="w-5 h-5" />}
                   </div>
 
                   <h4 className="text-lg font-bold font-display text-white mb-2 group-hover:text-gradient-silver transition-all">
@@ -121,34 +117,16 @@ export const About: React.FC<AboutProps> = ({ onOpenContact }) => {
                   </p>
                 </div>
 
-                <div className="space-y-1.5 pt-4 border-t border-white/5">
-                  {service.features.map((feat, i) => (
-                    <div key={i} className="flex items-center gap-2 text-[11px] text-zinc-400">
-                      <div className="w-1 h-1 rounded-full bg-zinc-400 group-hover:bg-white transition-colors" />
-                      <span>{feat}</span>
+                <div className="space-y-2 pt-4 border-t border-white/5">
+                  {service.deliverables.map((item, idx) => (
+                    <div key={idx} className="flex items-center gap-2 text-[11px] text-zinc-400">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-zinc-300 shrink-0" />
+                      <span>{item}</span>
                     </div>
                   ))}
                 </div>
               </div>
             ))}
-          </div>
-
-          {/* Callout Strip */}
-          <div className="mt-12 p-8 rounded-2xl glass-card border border-white/15 flex flex-col sm:flex-row items-center justify-between gap-6">
-            <div>
-              <h4 className="text-lg font-bold font-display text-white">
-                Have a specialized request or multi-asset package?
-              </h4>
-              <p className="text-sm text-zinc-400 mt-1">
-                We craft custom bundles for full brand overhauls, debut VTubers, and high-frequency content teams.
-              </p>
-            </div>
-            <button
-              onClick={onOpenContact}
-              className="px-6 py-3 bg-white text-black font-semibold text-xs rounded-full uppercase tracking-wider hover:bg-zinc-200 transition-all whitespace-nowrap hover:shadow-glow-sm"
-            >
-              Inquire Custom Scope
-            </button>
           </div>
         </div>
 

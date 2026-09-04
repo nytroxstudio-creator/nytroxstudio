@@ -1,27 +1,29 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { NytroxLogo } from './NytroxLogo';
 import { ArrowUpRight } from 'lucide-react';
+import { useContentStore } from '../services/contentStore';
 
 interface NavbarProps {
   onOpenContact: () => void;
   onOpenAdmin?: () => void;
 }
 
-const NAV_ITEMS = [
-  { label: 'Home', href: '#home' },
-  { label: 'About', href: '#about' },
-  { label: 'Capabilities', href: '#capabilities' },
-  { label: 'Portfolio', href: '#portfolio' },
-  { label: 'Reviews', href: '#reviews' },
-];
-
 export const Navbar: React.FC<NavbarProps> = ({ onOpenContact, onOpenAdmin }) => {
+  const store = useContentStore();
   const [activeSection, setActiveSection] = useState<string>('#home');
   const [hoveredSection, setHoveredSection] = useState<string | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
   const [isScrolled, setIsScrolled] = useState<boolean>(false);
 
-  // Measure pill geometry for the fluid sliding glass capsule
+  const navItems = [
+    { label: 'Home', href: '#home' },
+    { label: 'About', href: '#about' },
+    { label: 'Capabilities', href: '#capabilities' },
+    { label: 'Portfolio', href: '#portfolio' },
+    ...(store.siteSettings.showBlogSection ? [{ label: 'Blog', href: '#blog' }] : []),
+    ...(store.siteSettings.showReviewsSection ? [{ label: 'Reviews', href: '#reviews' }] : []),
+  ];
+
   const navContainerRef = useRef<HTMLDivElement>(null);
   const [pillStyle, setPillStyle] = useState<{ left: number; width: number; opacity: number }>({
     left: 0,
@@ -31,12 +33,11 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenContact, onOpenAdmin }) =>
 
   const targetSection = hoveredSection || activeSection;
 
-  // Track active section and navbar blur on scroll
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
 
-      const sections = NAV_ITEMS.map((item) => item.href.substring(1));
+      const sections = navItems.map((item) => item.href.substring(1));
       const scrollPosition = window.scrollY + 200;
 
       for (let i = sections.length - 1; i >= 0; i--) {
@@ -51,9 +52,8 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenContact, onOpenAdmin }) =>
     window.addEventListener('scroll', handleScroll, { passive: true });
     handleScroll();
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [navItems]);
 
-  // Update sliding glass pill position smoothly
   useEffect(() => {
     if (!navContainerRef.current) return;
 
@@ -73,7 +73,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenContact, onOpenAdmin }) =>
     } else {
       setPillStyle((prev) => ({ ...prev, opacity: 0 }));
     }
-  }, [targetSection]);
+  }, [targetSection, navItems]);
 
   const handleNavClick = (href: string) => {
     setActiveSection(href);
@@ -99,12 +99,11 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenContact, onOpenAdmin }) =>
           className="flex items-center gap-2 cursor-pointer select-none"
           onClick={() => handleNavClick('#home')}
           onDoubleClick={onOpenAdmin}
-          
         >
           <NytroxLogo size="nav" />
         </div>
 
-        {/* Desktop Nav Items with Single Liquid Sliding iOS 26 Glass Pill */}
+        {/* Desktop Nav Items */}
         <div
           ref={navContainerRef}
           onMouseLeave={() => setHoveredSection(null)}
@@ -125,7 +124,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenContact, onOpenAdmin }) =>
             }}
           />
 
-          {NAV_ITEMS.map((item) => {
+          {navItems.map((item) => {
             const isActive = activeSection === item.href;
             const isHovered = hoveredSection === item.href;
 
@@ -135,7 +134,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenContact, onOpenAdmin }) =>
                 data-nav={item.href}
                 onClick={() => handleNavClick(item.href)}
                 onMouseEnter={() => setHoveredSection(item.href)}
-                className={`relative z-10 px-4 py-1.5 rounded-full text-xs font-semibold uppercase tracking-wider transition-colors duration-200 select-none ${
+                className={`relative z-10 px-4 py-1.5 rounded-full text-xs font-semibold uppercase tracking-wider transition-colors duration-200 select-none cursor-pointer ${
                   isActive || isHovered ? 'text-white' : 'text-zinc-400 hover:text-zinc-200'
                 }`}
               >
@@ -149,7 +148,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenContact, onOpenAdmin }) =>
         <div className="flex items-center gap-2">
           <button
             onClick={onOpenContact}
-            className="hidden sm:inline-flex items-center gap-2 px-5 py-2 rounded-full bg-white text-black font-semibold text-xs uppercase tracking-wider hover:bg-zinc-200 transition-all duration-300 shadow-glow-sm"
+            className="hidden sm:inline-flex items-center gap-2 px-5 py-2 rounded-full bg-white text-black font-semibold text-xs uppercase tracking-wider hover:bg-zinc-200 transition-all duration-300 shadow-glow-sm cursor-pointer"
           >
             <span>Commission Work</span>
             <ArrowUpRight className="w-3.5 h-3.5" />
@@ -174,7 +173,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenContact, onOpenAdmin }) =>
       {mobileMenuOpen && (
         <div className="md:hidden fixed inset-x-4 top-20 z-50 glass-card p-6 rounded-3xl border border-white/15 shadow-2xl animate-fade-in bg-zinc-950/95 backdrop-blur-2xl">
           <div className="flex flex-col space-y-3">
-            {NAV_ITEMS.map((item) => (
+            {navItems.map((item) => (
               <button
                 key={item.href}
                 onClick={() => handleNavClick(item.href)}
@@ -194,18 +193,6 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenContact, onOpenAdmin }) =>
               <span>Commission Work</span>
               <ArrowUpRight className="w-4 h-4" />
             </button>
-
-            {onOpenAdmin && (
-              <button
-                onClick={() => {
-                  setMobileMenuOpen(false);
-                  onOpenAdmin();
-                }}
-                className="w-full mt-2 py-2 text-center text-xs text-zinc-500 hover:text-zinc-300 transition-colors"
-              >
-                🔒 Owner Admin Login
-              </button>
-            )}
           </div>
         </div>
       )}

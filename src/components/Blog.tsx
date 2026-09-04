@@ -1,32 +1,25 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { BookOpen, Sparkles, Clock, Calendar, ArrowRight, X, Search, Share2, Check } from 'lucide-react';
-import { BlogPost, INITIAL_BLOG_POSTS, fetchWordPressPosts } from '../data/blogData';
+import { useContentStore } from '../services/contentStore';
+import { BlogPost } from '../data/blogData';
 
 interface BlogProps {
   onOpenContact: () => void;
 }
 
-const CATEGORIES = ['All', 'Branding & Identity', 'VTuber & 3D', 'YouTube Packaging', 'Design Insights'];
-
 export const Blog: React.FC<BlogProps> = ({ onOpenContact }) => {
-  const [posts, setPosts] = useState<BlogPost[]>(INITIAL_BLOG_POSTS);
+  const store = useContentStore();
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
   const [activePost, setActivePost] = useState<BlogPost | null>(null);
   const [copiedLink, setCopiedLink] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    async function loadPosts() {
-      setIsLoading(true);
-      const data = await fetchWordPressPosts();
-      setPosts(data);
-      setIsLoading(false);
-    }
-    loadPosts();
-  }, []);
+  const categories = ['All', ...store.blogCategories];
 
-  const filteredPosts = posts.filter((p) => {
+  // Only display published posts on public view
+  const publishedPosts = store.posts.filter((p) => (p as any).status !== 'draft');
+
+  const filteredPosts = publishedPosts.filter((p) => {
     const matchesCategory = selectedCategory === 'All' || p.category === selectedCategory;
     const matchesSearch =
       p.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -44,16 +37,13 @@ export const Blog: React.FC<BlogProps> = ({ onOpenContact }) => {
 
   return (
     <section id="blog" className="relative py-24 sm:py-32 border-t border-white/10 overflow-hidden">
-      {/* Subtle Ambient Section Lighting */}
-      <div className="pointer-events-none absolute top-1/3 left-1/2 -translate-x-1/2 w-[700px] h-[350px] rounded-full bg-white/[0.02] blur-[140px] -z-10" />
-
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
         {/* Section Header */}
         <div className="max-w-3xl mb-12">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full glass-card border border-white/15 text-[11px] font-semibold tracking-widest uppercase text-zinc-300 mb-4 shimmer-badge">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full glass-card border border-white/15 text-[11px] font-semibold tracking-widest uppercase text-zinc-300 mb-4">
             <BookOpen className="w-3.5 h-3.5 text-zinc-400" />
-            <span>Studio Journal & SEO Insights</span>
+            <span>Studio Journal & Insights</span>
           </div>
 
           <h2 className="text-3xl sm:text-5xl font-black font-display tracking-tight text-white leading-tight mb-4">
@@ -67,15 +57,14 @@ export const Blog: React.FC<BlogProps> = ({ onOpenContact }) => {
 
         {/* Filter Controls & Search Bar */}
         <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 mb-12">
-          {/* Category Filter Pills */}
           <div className="flex items-center gap-2 overflow-x-auto pb-2 md:pb-0 scrollbar-none">
-            {CATEGORIES.map((cat) => {
+            {categories.map((cat) => {
               const isSelected = selectedCategory === cat;
               return (
                 <button
                   key={cat}
                   onClick={() => setSelectedCategory(cat)}
-                  className={`px-4 py-2 rounded-full text-xs font-semibold tracking-wider whitespace-nowrap transition-all duration-300 ${
+                  className={`px-4 py-2 rounded-full text-xs font-semibold tracking-wider whitespace-nowrap transition-all duration-300 cursor-pointer ${
                     isSelected
                       ? 'bg-white text-black shadow-glow-sm scale-105'
                       : 'glass-card border border-white/10 text-zinc-400 hover:text-white hover:border-white/25 hover:bg-white/5'
@@ -87,7 +76,6 @@ export const Blog: React.FC<BlogProps> = ({ onOpenContact }) => {
             })}
           </div>
 
-          {/* Search Input */}
           <div className="relative max-w-xs w-full">
             <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
             <input
@@ -97,221 +85,115 @@ export const Blog: React.FC<BlogProps> = ({ onOpenContact }) => {
               placeholder="Search articles..."
               className="w-full pl-10 pr-4 py-2 rounded-full bg-surface-100/80 border border-white/10 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-white/30 backdrop-blur-md transition-all"
             />
-            {searchQuery && (
-              <button
-                onClick={() => setSearchQuery('')}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-white"
-              >
-                <X className="w-3.5 h-3.5" />
-              </button>
-            )}
           </div>
         </div>
 
-        {/* Blog Post Grid */}
+        {/* Posts Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
           {filteredPosts.map((post) => (
             <article
               key={post.id}
               onClick={() => setActivePost(post)}
-              className="group cursor-pointer rounded-3xl overflow-hidden glass-card border border-white/10 hover:border-white/25 transition-all duration-500 hover:-translate-y-1.5 flex flex-col hover:shadow-glow-sm"
+              className="group glass-card rounded-2xl border border-white/10 overflow-hidden cursor-pointer transition-all duration-300 hover:border-white/30 hover:scale-[1.02] flex flex-col justify-between"
             >
-              {/* Cover Image Container */}
-              <div className="aspect-[16/10] w-full overflow-hidden bg-zinc-950 relative">
-                <img
-                  src={post.coverImage}
-                  alt={post.title}
-                  loading="lazy"
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-transparent to-transparent opacity-80" />
-                
-                {/* Category Badge */}
-                <div className="absolute top-4 left-4">
-                  <span className="px-3 py-1 rounded-full bg-black/70 backdrop-blur-md border border-white/15 text-[10px] uppercase font-bold tracking-widest text-zinc-200">
-                    {post.category}
-                  </span>
+              <div>
+                <div className="aspect-[16/10] w-full overflow-hidden bg-zinc-950">
+                  <img
+                    src={post.coverImage}
+                    alt={post.title}
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
                 </div>
-              </div>
-
-              {/* Card Body */}
-              <div className="p-6 flex-1 flex flex-col justify-between space-y-4">
-                <div>
-                  <div className="flex items-center gap-3 text-[11px] text-zinc-400 mb-2.5">
-                    <span className="inline-flex items-center gap-1">
-                      <Calendar className="w-3 h-3 text-zinc-500" />
-                      {post.publishedAt}
-                    </span>
-                    <span>•</span>
-                    <span className="inline-flex items-center gap-1">
-                      <Clock className="w-3 h-3 text-zinc-500" />
-                      {post.readTime}
-                    </span>
+                <div className="p-5 space-y-2.5">
+                  <div className="flex items-center justify-between text-[11px] text-zinc-400">
+                    <span className="font-bold uppercase tracking-wider text-zinc-300">{post.category}</span>
+                    <span>{post.readTime}</span>
                   </div>
-
-                  <h3 className="text-base sm:text-lg font-bold font-display text-white group-hover:text-gradient-silver transition-colors leading-snug line-clamp-2">
+                  <h3 className="text-base font-bold font-display text-white group-hover:text-zinc-200 transition-colors line-clamp-2">
                     {post.title}
                   </h3>
-
-                  <p className="text-xs text-zinc-400 line-clamp-3 leading-relaxed mt-2.5">
+                  <p className="text-xs text-zinc-400 line-clamp-2 leading-relaxed">
                     {post.excerpt}
                   </p>
                 </div>
+              </div>
 
-                <div className="pt-4 border-t border-white/10 flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <div className="w-6 h-6 rounded-full bg-white/10 border border-white/10 flex items-center justify-center text-[10px] font-bold text-zinc-300">
-                      {post.author.avatar}
-                    </div>
-                    <span className="text-[11px] font-medium text-zinc-300 truncate max-w-[120px]">
-                      {post.author.name}
-                    </span>
+              <div className="p-5 pt-0 flex items-center justify-between text-xs text-zinc-400 border-t border-white/5 mt-4 pt-3">
+                <div className="flex items-center gap-2">
+                  <div className="w-5 h-5 rounded-full bg-white/10 flex items-center justify-center text-[9px] font-bold text-white">
+                    {post.author.avatar}
                   </div>
-
-                  <span className="inline-flex items-center gap-1 text-xs font-semibold text-zinc-300 group-hover:text-white transition-colors">
-                    <span>Read Article</span>
-                    <ArrowRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" />
-                  </span>
+                  <span className="text-[11px] font-medium text-zinc-300">{post.author.name}</span>
                 </div>
+                <span className="text-xs font-semibold text-white group-hover:translate-x-1 transition-transform inline-flex items-center gap-1">
+                  Read →
+                </span>
               </div>
             </article>
           ))}
         </div>
 
-        {/* Empty State */}
-        {filteredPosts.length === 0 && (
-          <div className="py-20 text-center glass-card rounded-3xl border border-white/10 p-8 max-w-md mx-auto">
-            <BookOpen className="w-8 h-8 text-zinc-500 mx-auto mb-3" />
-            <h4 className="text-base font-bold text-white mb-1">No articles found</h4>
-            <p className="text-xs text-zinc-400">Try adjusting your search query or selecting a different category.</p>
-          </div>
-        )}
-
       </div>
 
-      {/* --- Fullscreen Reading Modal --- */}
+      {/* Post Reading Modal */}
       {activePost && (
         <div
-          className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 bg-black/90 backdrop-blur-xl animate-fade-in"
+          className="fixed inset-0 z-[120] flex items-center justify-center p-4 sm:p-6 md:p-8 bg-black/95 backdrop-blur-2xl animate-fade-in"
           onClick={() => setActivePost(null)}
         >
           <div
-            className="relative max-w-3xl w-full glass-card rounded-3xl border border-white/20 shadow-2xl max-h-[90vh] overflow-y-auto flex flex-col"
+            className="relative max-w-3xl w-full max-h-[85vh] overflow-y-auto glass-card rounded-3xl border border-white/20 p-6 sm:p-10 bg-zinc-950 text-white space-y-6"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Modal Close Button */}
             <button
               onClick={() => setActivePost(null)}
-              className="absolute top-5 right-5 z-20 p-2.5 rounded-full bg-black/60 backdrop-blur-md border border-white/20 text-zinc-300 hover:text-white hover:bg-white/20 transition-all"
-              aria-label="Close article"
+              className="absolute top-5 right-5 p-2 rounded-full glass-card border border-white/20 text-zinc-400 hover:text-white cursor-pointer"
             >
-              <X className="w-5 h-5" />
+              <X className="w-4 h-4" />
             </button>
 
-            {/* Header Hero Image */}
-            <div className="relative aspect-[21/9] w-full overflow-hidden bg-zinc-950">
-              <img
-                src={activePost.coverImage}
-                alt={activePost.title}
-                className="w-full h-full object-cover"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-surface-300 via-surface-300/40 to-transparent" />
-            </div>
-
-            {/* Content Container */}
-            <div className="p-6 sm:p-10 space-y-6">
-              
-              {/* Meta Row */}
-              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 pb-4">
-                <div className="flex items-center gap-3">
-                  <span className="px-3 py-1 rounded-full bg-white/10 border border-white/15 text-xs font-bold uppercase tracking-wider text-white">
-                    {activePost.category}
-                  </span>
-                  <span className="text-xs text-zinc-400 flex items-center gap-1">
-                    <Calendar className="w-3.5 h-3.5" />
-                    {activePost.publishedAt}
-                  </span>
-                  <span className="text-xs text-zinc-400 flex items-center gap-1">
-                    <Clock className="w-3.5 h-3.5" />
-                    {activePost.readTime}
-                  </span>
-                </div>
-
-                <button
-                  onClick={handleShare}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full glass-card border border-white/10 text-xs font-medium text-zinc-300 hover:text-white transition-all"
-                >
-                  {copiedLink ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Share2 className="w-3.5 h-3.5" />}
-                  <span>{copiedLink ? 'Link Copied!' : 'Share'}</span>
-                </button>
-              </div>
-
-              {/* Title */}
-              <h1 className="text-2xl sm:text-4xl font-extrabold font-display text-white leading-tight">
+            <div>
+              <span className="px-3 py-1 rounded-full bg-white/10 text-[10px] font-bold uppercase tracking-wider text-zinc-300 inline-block mb-3">
+                {activePost.category}
+              </span>
+              <h1 className="text-2xl sm:text-3xl font-black font-display text-white leading-tight">
                 {activePost.title}
               </h1>
-
-              {/* Author Row */}
-              <div className="flex items-center gap-3 py-3 border-y border-white/10">
-                <div className="w-10 h-10 rounded-full bg-white text-black font-bold flex items-center justify-center text-sm shadow-glow-sm">
-                  {activePost.author.avatar}
-                </div>
-                <div>
-                  <h4 className="text-sm font-semibold text-white">{activePost.author.name}</h4>
-                  <p className="text-xs text-zinc-400">{activePost.author.role}</p>
-                </div>
+              <div className="flex items-center gap-3 text-xs text-zinc-400 mt-3 pt-3 border-t border-white/10">
+                <span>By {activePost.author.name}</span>
+                <span>•</span>
+                <span>{activePost.publishedAt}</span>
+                <span>•</span>
+                <span>{activePost.readTime}</span>
               </div>
+            </div>
 
-              {/* Body Text */}
-              <div className="prose prose-invert max-w-none text-zinc-300 text-sm sm:text-base leading-relaxed space-y-4 pt-2">
-                <p className="text-base sm:text-lg font-medium text-zinc-200 leading-relaxed">
-                  {activePost.excerpt}
-                </p>
+            <div className="w-full aspect-video rounded-2xl overflow-hidden border border-white/10">
+              <img src={activePost.coverImage} alt={activePost.title} className="w-full h-full object-cover" />
+            </div>
 
-                {activePost.content.split('\n\n').map((paragraph, index) => {
-                  if (paragraph.startsWith('# ')) {
-                    return null;
-                  }
-                  if (paragraph.startsWith('## ')) {
-                    return (
-                      <h2 key={index} className="text-xl sm:text-2xl font-bold font-display text-white pt-4 pb-1">
-                        {paragraph.replace('## ', '')}
-                      </h2>
-                    );
-                  }
-                  if (paragraph.startsWith('### ')) {
-                    return (
-                      <h3 key={index} className="text-base sm:text-lg font-semibold text-zinc-200 pt-3">
-                        {paragraph.replace('### ', '')}
-                      </h3>
-                    );
-                  }
-                  return (
-                    <p key={index} className="text-zinc-300 leading-relaxed">
-                      {paragraph}
-                    </p>
-                  );
-                })}
-              </div>
+            <div className="prose prose-invert max-w-none text-zinc-300 text-sm leading-relaxed space-y-4 whitespace-pre-line">
+              {activePost.content}
+            </div>
 
-              {/* Bottom Consultation Callout */}
-              <div className="mt-10 p-6 rounded-2xl bg-surface-100 border border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4">
-                <div>
-                  <h4 className="text-sm font-bold text-white">Ready to elevate your visual identity?</h4>
-                  <p className="text-xs text-zinc-400 mt-0.5">Let’s discuss your next logo, VTuber model, or branding project.</p>
-                </div>
-                <button
-                  onClick={() => {
-                    setActivePost(null);
-                    onOpenContact();
-                  }}
-                  className="px-5 py-2.5 bg-white text-black font-semibold text-xs uppercase tracking-wider rounded-full hover:bg-zinc-200 transition-all flex items-center gap-1.5 whitespace-nowrap shadow-glow-sm"
-                >
-                  <Sparkles className="w-3.5 h-3.5" />
-                  <span>Start Project</span>
-                </button>
-              </div>
+            <div className="pt-6 border-t border-white/10 flex items-center justify-between">
+              <button
+                onClick={handleShare}
+                className="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/15 text-xs text-white flex items-center gap-2 cursor-pointer"
+              >
+                {copiedLink ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Share2 className="w-3.5 h-3.5" />}
+                <span>{copiedLink ? 'Link Copied!' : 'Share Article'}</span>
+              </button>
 
+              <button
+                onClick={() => {
+                  setActivePost(null);
+                  onOpenContact();
+                }}
+                className="px-5 py-2 rounded-xl bg-white text-black font-bold text-xs uppercase hover:bg-zinc-200 cursor-pointer"
+              >
+                Commission Studio
+              </button>
             </div>
           </div>
         </div>
