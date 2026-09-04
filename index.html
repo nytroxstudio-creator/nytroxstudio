@@ -22,6 +22,51 @@
     <title>Nytrox Studio — Premium Creative Studio & Brand Identity</title>
     <meta name="description" content="Bold branding, VTuber characters, logo design, banners, posters, and digital experiences crafted for creators who refuse to blend in." />
     <meta name="theme-color" content="#060608" />
+  
+    <!-- Google Search Engine JSON-LD Schema (Structured Data) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Organization",
+          "@id": "https://nytroxstudio.com/#organization",
+          "name": "Nytrox Studio",
+          "url": "https://nytroxstudio.com",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "https://nytroxstudio.com/nytrox-logo.jpg",
+            "caption": "Nytrox Studio Brand Logo"
+          },
+          "email": "contact@nytroxstudio.com",
+          "sameAs": [
+            "https://instagram.com/nytroxstudio",
+            "https://twitter.com/nytroxstudio",
+            "https://linkedin.com/company/nytroxstudio"
+          ]
+        },
+        {
+          "@type": "WebSite",
+          "@id": "https://nytroxstudio.com/#website",
+          "url": "https://nytroxstudio.com",
+          "name": "Nytrox Studio — Premium Creative Studio & Brand Identity",
+          "description": "Bold branding, VTuber characters, logo design, banners, and digital experiences crafted for creators who refuse to blend in.",
+          "publisher": {
+            "@id": "https://nytroxstudio.com/#organization"
+          }
+        },
+        {
+          "@type": "CreativeWork",
+          "name": "Nytrox Studio Creative Showcase",
+          "creator": {
+            "@id": "https://nytroxstudio.com/#organization"
+          },
+          "genre": "Digital Media, Live2D Rigging, 3D Branding, Content Packaging"
+        }
+      ]
+    }
+    </script>
+
   </head>
   <body class="bg-background text-platinum antialiased selection:bg-zinc-700 selection:text-white min-h-screen overflow-x-hidden">
     <div id="root"></div>
