@@ -293,15 +293,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ isOpen, onClose 
   };
 
   const confirmDeletePost = (post: BlogPost) => {
-    setDeleteConfirm({
-      isOpen: true,
-      title: `Are you sure you want to permanently delete post "${post.title}"?`,
-      onConfirm: () => {
-        store.deletePost(post.id);
-        setDeleteConfirm({ isOpen: false, title: '', onConfirm: () => {} });
-        showToast('Post deleted successfully');
-      }
-    });
+    const ok = window.confirm(`Are you sure you want to permanently delete post "${post.title}"?`);
+    if (!ok) return;
+
+    store.deletePost(post.id);
+    showToast(`Post "${post.title}" deleted!`);
   };
 
   // ----------------------------------------------------
@@ -375,15 +371,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ isOpen, onClose 
   };
 
   const confirmDeleteProject = (proj: PortfolioItem) => {
-    setDeleteConfirm({
-      isOpen: true,
-      title: `Delete "${proj.title}" from your public portfolio?`,
-      onConfirm: () => {
-        store.deleteProject(proj.id);
-        setDeleteConfirm({ isOpen: false, title: '', onConfirm: () => {} });
-        showToast('Project removed from portfolio');
-      }
-    });
+    const ok = window.confirm(`Delete "${proj.title}" from your public portfolio?`);
+    if (!ok) return;
+
+    store.deleteProject(proj.id);
+    showToast(`Project "${proj.title}" removed!`);
   };
 
   // ----------------------------------------------------
@@ -440,15 +432,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ isOpen, onClose 
   };
 
   const confirmDeleteReview = (rev: ReviewItem) => {
-    setDeleteConfirm({
-      isOpen: true,
-      title: `Remove review by "${rev.name}"?`,
-      onConfirm: () => {
-        store.deleteReview(rev.id);
-        setDeleteConfirm({ isOpen: false, title: '', onConfirm: () => {} });
-        showToast('Review removed');
-      }
-    });
+    const ok = window.confirm(`Remove review by "${rev.name}"?`);
+    if (!ok) return;
+
+    store.deleteReview(rev.id);
+    showToast('Review removed!');
   };
 
   // ----------------------------------------------------
@@ -489,15 +477,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ isOpen, onClose 
   };
 
   const confirmDeleteMedia = (item: MediaItem) => {
-    setDeleteConfirm({
-      isOpen: true,
-      title: `Delete "${item.name}" from your media library?`,
-      onConfirm: () => {
-        store.deleteMedia(item.id);
-        setDeleteConfirm({ isOpen: false, title: '', onConfirm: () => {} });
-        showToast('Media file deleted');
-      }
-    });
+    const ok = window.confirm(`Delete "${item.name}" from your media library?`);
+    if (!ok) return;
+
+    store.deleteMedia(item.id);
+    showToast('Media file deleted!');
   };
 
   // ----------------------------------------------------

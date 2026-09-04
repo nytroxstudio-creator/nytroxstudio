@@ -276,9 +276,20 @@ export const contentStore = {
     return true;
   },
 
-  deletePost(id: string | number): boolean {
-    const updated = currentState.posts.filter((p) => String(p.id) !== String(id));
-    if (updated.length === currentState.posts.length) return false;
+  setPosts(newPosts: BlogPost[]) {
+    persistAndBroadcast({
+      ...currentState,
+      posts: newPosts,
+      version: currentState.version + 1
+    });
+  },
+  deletePost(idOrSlug: string | number): boolean {
+    const target = String(idOrSlug).trim();
+    const updated = currentState.posts.filter((p) => {
+      const matchId = String(p.id).trim() === target;
+      const matchSlug = p.slug && p.slug.trim() === target;
+      return !matchId && !matchSlug;
+    });
 
     persistAndBroadcast({
       ...currentState,
